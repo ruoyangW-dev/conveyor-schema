@@ -1,0 +1,14 @@
+/src
+/.idea
+/.DS_Store
+/.babelrc
+
+
+/.vscode/
+/node_modules/
+/yarn.lock
+/.yarn-error.log
+.eslintrc.js
+.gitignore
+build.sh
+/*.tgz
