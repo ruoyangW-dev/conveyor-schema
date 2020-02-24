@@ -2,7 +2,9 @@
 /.idea
 /.DS_Store
 /.babelrc
-
+/docs/Makefile
+/docs/conf.py
+/docs/_build/
 
 /.vscode/
 /node_modules/
