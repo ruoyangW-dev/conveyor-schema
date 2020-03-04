@@ -7,3 +7,5 @@
 /docs/Makefile
 /docs/conf.py
 /docs/_build/
+yalc.lock
+/.yalc
