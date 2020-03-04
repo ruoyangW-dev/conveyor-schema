@@ -34,7 +34,7 @@ publish
 --------
 
 'npm login' (if haven't done so already; need npm account for this)
-'git publish --access public' (since scoped package need --access tag)
+'npm publish --access public' (since scoped package need --access tag)
 
 
 tag
