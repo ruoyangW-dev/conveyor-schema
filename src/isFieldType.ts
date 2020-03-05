@@ -25,6 +25,7 @@ export const _isRel = (schemaJSON: any, modelName: string, fieldName: string) =>
 
 // string types
 
+// todo: use inputTypes instead of string for comparison
 export const _isEnum = (schemaJSON: any, modelName: string, fieldName: string) => {
   return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'enum'
 }
