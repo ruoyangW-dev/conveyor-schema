@@ -9,6 +9,32 @@ For example, in a table 'Book', getDisplayValue() returns 'Robinson Crusoe' */
 
 export const _getDisplayValue = ({ schema, modelName, node, customProps }:
                                      { schema: SchemaBuilderType, modelName: string, node?: NodeType, customProps?: any }) => {
+  /* schema's 'displayField' can be:
+
+  1.) a string (used by magql)
+  2.) a callback function (used by conveyor-schema)
+
+  There are two methods of calculating the value displayed:
+
+  1.) calculated on the backend
+  (magql, by default, looks at the models 'displayField' string and retrieves the field it corresponds to)
+  This gives you a 'displayName' string in the 'node' attribute:
+
+    // on backend pseudo code setting 'Book' displayName:
+    bookNode['displayName'] = bookInstance[schema.Book.displayField]
+
+    // frontend queried value:
+    const display = node.displayName
+
+  This gets returned by the query as 'displayName' in the 'node' attribute. Alternatively,
+  the backend may override magql's functionality on the backend and come up with its own 'displayName' which
+  will be inserted into the node's 'displayName'.
+
+  2.) calculated on the frontend
+  (done by conveyor-schema)
+  If 'displayField' is a callback function, then this overrides whatever is returned by the backend.
+  If 'displayField' is not a function, it returns whatever 'displayName' is by default. */
+
   const model = schema.getModel(modelName)
   // the displayField indicates which field 'represents' the entire model (usually 'name')
   const displayField = R.propOr('name', 'displayField', model)
@@ -17,7 +43,7 @@ export const _getDisplayValue = ({ schema, modelName, node, customProps }:
     return displayField({ schema, modelName, node, customProps })
   }
   // @ts-ignore
-  return R.prop(displayField, node)
+  return R.prop('displayValue', node)
 }
 
 export const _getFieldLabel = ({ schema, modelName, fieldName, node, data, customProps }:
