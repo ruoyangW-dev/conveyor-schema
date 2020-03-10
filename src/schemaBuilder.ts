@@ -3,6 +3,7 @@ import * as commonGetters from './commonGetters'
 import * as mergeSchema from './mergeSchema'
 import * as callbackGetters from './callbackGetters'
 import * as miscGetters from './miscGetters'
+import { inputTypes } from './inputTypes'
 import { _getModelOverride, _getFieldOverride } from './componentOverrides'
 
 /* Notes:
@@ -83,8 +84,10 @@ export type DataType = [ NodeType ]
 
 export class SchemaBuilder {
   public schemaJSON: any;
+  public inputTypes: any;
 
   constructor(schemaJSON: any) {
+    this.inputTypes = inputTypes
     this.schemaJSON = schemaJSON
   }
 
