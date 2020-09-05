@@ -30,7 +30,8 @@ Now your schema is ready to be passed into any conveyor component
 
 # Development
 
-To create the /lib folder with corresponding .d.ts files run:
+To create the /lib folder including .d.ts files run:
 
-tsc
-
+```
+$ yarn run build
+```

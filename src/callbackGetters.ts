@@ -34,7 +34,7 @@ export const _isRowEditable = ({ schema, modelName, node, parentNode, fieldOrder
   }
   for (const index in fieldOrder) {
     // @ts-ignore
-    const fieldName = R.prop(index, fieldOrder)
+    const fieldName = R.prop(index, fieldOrder) as string
     if (
       schema.isFieldEditable({
         modelName,
@@ -105,16 +105,19 @@ export const _isCreatable = ({ schema, modelName, parentNode, data, customProps 
 
 export const _shouldDisplayIndex = ({ schema, modelName, fieldName, node, customProps }:
       { schema: SchemaBuilderType, modelName: string, fieldName: string, node?: NodeType, customProps?: any }) => {
+  // @ts-ignore
   const displayCondition = R.prop('index', schema.getFieldConditions(modelName, fieldName))
   return schema.shouldDisplay({ modelName, fieldName, node, displayCondition, customProps })
 }
 export const _shouldDisplayDetail = ({ schema, modelName, fieldName, node, customProps }:
       { schema: SchemaBuilderType, modelName: string, fieldName: string, node?: NodeType, customProps?: any }) => {
+  // @ts-ignore
   const displayCondition = R.prop('detail', schema.getFieldConditions(modelName, fieldName))
   return schema.shouldDisplay({ modelName, fieldName, node, displayCondition, customProps })
 }
 export const _shouldDisplayCreate = ({ schema, modelName, fieldName, node, customProps }:
       { schema: SchemaBuilderType, modelName: string, fieldName: string, node?: NodeType, customProps?: any }) => {
+  // @ts-ignore
   const displayCondition = R.prop('create', schema.getFieldConditions(modelName, fieldName))
   return schema.shouldDisplay({ modelName, fieldName, node, displayCondition, customProps })
 }
@@ -136,7 +139,7 @@ export const _isFieldDisabled = ({ schema, modelName, fieldName, formStack, cust
   const stack = R.prop('stack', formStack)
   const form = R.prop(stackIndex, stack)
 
-  const type = schema.getType(modelName, fieldName)
+  const type = schema.getType(modelName, fieldName) as string
 
   // check the form to see if 'disabled' flag set true
   let defaultDisable = false
@@ -152,7 +155,7 @@ export const _isFieldDisabled = ({ schema, modelName, fieldName, formStack, cust
   const disableCondition = schema.getFieldDisableCondition(modelName, fieldName)
 
   if (R.type(disableCondition) === 'Function') {
-    return disableCondition({ schema, modelName, fieldName, defaultDisable, customProps })
+    return (disableCondition as Function)({ schema, modelName, fieldName, defaultDisable, customProps })
   }
   if (R.type(disableCondition) === 'Boolean') {
     return disableCondition
@@ -194,7 +197,9 @@ export const _isTableSortable = ({ schema, modelName, customProps }:
   const model = schema.getModel(modelName)
   // @ts-ignore
   const fieldOrder = R.prop('fieldOrder', model)
+  // @ts-ignore
   const boolList = R.map(fieldName => schema.isSortable({ modelName, fieldName, customProps }), fieldOrder)
+  // @ts-ignore
   return !R.isEmpty(R.filter(R.identity, boolList))
 }
 
@@ -245,10 +250,12 @@ export const _isTableFilterable = ({ schema, modelName, data, customProps }:
   const model = schema.getModel(modelName)
   // @ts-ignore
   const fieldOrder = R.prop('fieldOrder', model)
+  // @ts-ignore
   const boolList = R.map(fieldName =>
     schema.isFilterable({ modelName, fieldName, data, customProps }),
     fieldOrder
   )
+  // @ts-ignore
   return !R.isEmpty(R.filter(R.identity, boolList))
 }
 
@@ -278,11 +285,13 @@ export const _getShownFields = ({ schema, modelName, type, node, data, customPro
         show = R.prop(type, schema.getField(modelName, fieldName))
     }
     if (R.type(show) === 'Function') {
+      // @ts-ignore
       show = show({
         schema, modelName, fieldName, node, data, customProps
       })
     }
     return show
+    // @ts-ignore
   }, fieldOrder)
 }
 
@@ -292,6 +301,7 @@ export const _getDetailFields = ({ schema, modelName, node, customProps }:
   const detailFieldOrder = R.prop('detailFieldOrder', schema.getModel(modelName))
   const defaultOrder = schema.getShownFields({ modelName, type: 'showDetail', node, customProps })
   if (R.type(detailFieldOrder) === 'Function') {
+    // @ts-ignore
     return detailFieldOrder({ schema, modelName, node, defaultOrder, customProps })
   } else if (R.type(detailFieldOrder) === 'Array') {
     return detailFieldOrder
@@ -305,6 +315,7 @@ export const _getIndexFields = ({ schema, modelName, data, customProps }:
   const indexFieldOrder = R.prop('indexFieldOrder', schema.getModel(modelName))
   const defaultOrder = schema.getShownFields({ modelName, type: 'showIndex', data, customProps })
   if (R.type(indexFieldOrder) === 'Function') {
+    // @ts-ignore
     return indexFieldOrder({ schema, modelName, data, defaultOrder, customProps })
   } else if (R.type(indexFieldOrder) === 'Array') {
     return indexFieldOrder
@@ -318,6 +329,7 @@ export const _getCreateFields = ({ schema, modelName, customProps }:
   const createFieldOrder = R.prop('createFieldOrder', schema.getModel(modelName))
   const defaultOrder = schema.getShownFields({ modelName, type: 'showCreate', customProps })
   if (R.type(createFieldOrder) === 'Function') {
+    // @ts-ignore
     return createFieldOrder({ schema, modelName, defaultOrder, customProps })
   } else if (R.type(createFieldOrder) === 'Array') {
     return createFieldOrder
@@ -331,6 +343,7 @@ export const _getTooltipFields = ({ schema, modelName, customProps }:
   const tooltipFieldOrder = R.prop('tooltipFieldOrder', schema.getModel(modelName))
   const defaultOrder = schema.getShownFields({ modelName, type: 'showTooltip', customProps })
   if (R.type(tooltipFieldOrder) === 'Function') {
+    // @ts-ignore
     return tooltipFieldOrder({ schema, modelName, defaultOrder, customProps })
   } else if (R.type(tooltipFieldOrder) === 'Array') {
     return tooltipFieldOrder
