@@ -2,10 +2,12 @@ import * as R from 'ramda'
 import { SchemaBuilderType } from './schemaBuilder'
 
 export const _getFieldConditions = (schema: SchemaBuilderType, modelName: string, fieldName: string) => {
+  // @ts-ignore
   return R.prop('displayConditions', schema.getField(modelName, fieldName))
 }
 
 export const _getFieldDisableCondition = (schema: SchemaBuilderType, modelName: string, fieldName: string) => {
+  // @ts-ignore
   return R.prop('disabled', schema.getField(modelName, fieldName))
 }
 
@@ -34,10 +36,12 @@ export const _getSingleton = (schema: SchemaBuilderType, modelName: string) => {
 }
 
 export const _getEnumChoices = (schema: SchemaBuilderType, modelName: string, fieldName: string) => {
+  // @ts-ignore
   return R.prop('choices', schema.getField(modelName, fieldName))
 }
 
 export const _getEnumChoiceOrder = (schema: SchemaBuilderType, modelName: string, fieldName: string) => {
+  // @ts-ignore
   return R.prop('choiceOrder', schema.getField(modelName, fieldName))
 }
 

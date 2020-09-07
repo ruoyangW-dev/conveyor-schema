@@ -73,6 +73,7 @@ export const _getFields = (schema: SchemaBuilderType, modelName: string) => {
 }
 
 export const _getField = (schema: SchemaBuilderType, modelName: string, fieldName: string) => (
+  // @ts-ignore
   R.prop(fieldName, schema.getFields(modelName))
 )
 
@@ -81,6 +82,7 @@ export const _getType = (schema: SchemaBuilderType, modelName: string, fieldName
   if (schema.isRel(modelName, fieldName)) {
     return R.path(['type', 'type'], field)
   }
+  // @ts-ignore
   return R.prop('type', field)
 }
 
