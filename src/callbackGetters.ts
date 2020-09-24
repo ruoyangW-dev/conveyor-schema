@@ -30,7 +30,7 @@ export const _isRowEditable = ({ schema, modelName, node, parentNode, fieldOrder
       { schema: SchemaBuilderType, modelName: string, node: NodeType, parentNode?: NodeType, fieldOrder?: [string], customProps?: any }) => {
   if (!fieldOrder) {
     // @ts-ignore
-    fieldOrder = Object.keys(node)
+    fieldOrder = Object.keys(R.omit(['__typename'], node))
   }
   for (const index in fieldOrder) {
     // @ts-ignore
