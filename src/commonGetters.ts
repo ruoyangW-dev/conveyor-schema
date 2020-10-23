@@ -20,6 +20,18 @@ export const _getDisplayValue = ({ schema, modelName, node, customProps }:
   return R.prop(displayField, node)
 }
 
+export const _getNoDataDisplayValue = ({ schema, modelName, fieldName, node, customProps }:
+  { schema: SchemaBuilderType, modelName: string, fieldName: string, node?: NodeType, customProps?: any }) => {
+const model = schema.getModel(modelName)
+
+const noDataDisplayValue = R.pathOr('N/A', ['fields', fieldName, 'noDataDisplayValue'], model)
+if (R.type(noDataDisplayValue) === 'Function') {
+  // @ts-ignore
+  return noDataDisplayValue({ schema, modelName, fieldName, node, customProps })
+}
+  return noDataDisplayValue
+}
+
 export const _getFieldLabel = ({ schema, modelName, fieldName, node, data, customProps }:
                                    { schema: SchemaBuilderType, modelName: string, fieldName: string, node?: NodeType, data?: DataType, customProps?: any }) => {
   const defaultValue = humanizeField(fieldName)

@@ -106,6 +106,10 @@ export class SchemaBuilder {
                       { modelName: string, node?: NodeType, customProps?: any }) {
     return commonGetters._getDisplayValue({ schema: this, modelName, node, customProps })
   }
+  getNoDataDisplayValue({ modelName, fieldName, node, customProps }:
+                      { modelName: string, fieldName: string, node?: NodeType, customProps?: any }) {
+    return commonGetters._getNoDataDisplayValue({ schema: this, modelName, fieldName, node, customProps })
+  }
   getFieldLabel({ modelName, fieldName, node, data, customProps } :
                     { modelName: string, fieldName: string, node?: NodeType, data?: DataType, customProps?: any }) {
     return commonGetters._getFieldLabel({ schema: this, modelName, fieldName, node, data, customProps })
