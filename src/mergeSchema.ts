@@ -1,38 +1,65 @@
 import * as R from 'ramda'
+import type { Field, Schema, SchemaJSON } from './schemaJson'
 import { SchemaBuilderType } from './schemaBuilder'
 
 // helpers to merge remote schema or attributes into schemaJSON object
 
 // override is false/undef (default) if current values LEFT ALONE => mergeLEFT
 // override is true if new function should override current data => mergeRIGHT
-const getCombine = (override?: boolean) => override ? R.mergeDeepRight : R.mergeDeepLeft
+const getCombine = <T extends any, U extends any>(
+  override = false
+): ((x: T, y: U) => T) => (override ? R.mergeDeepRight : R.mergeDeepLeft)
 
-export const _mergeSchema = (schema: SchemaBuilderType, remoteSchema: any, override?: boolean) => {
-  const combine = getCombine(override)
-  // @ts-ignore
+export const _mergeSchema = (
+  schema: SchemaBuilderType,
+  remoteSchema: SchemaJSON,
+  override = false
+): void => {
+  const combine = getCombine<SchemaJSON, SchemaJSON>(override)
+
   schema.schemaJSON = combine(schema.schemaJSON, remoteSchema)
 }
 
-export const _mergeDefaultModelAttr = (schema: SchemaBuilderType, getDefaultModelProps: any, override?: boolean) => {
-  const combine = getCombine(override)
+export const _mergeDefaultModelAttr = (
+  schema: SchemaBuilderType,
+  getDefaultModelProps: (props: {
+    schema: SchemaBuilderType
+    model: Schema
+  }) => Schema,
+  override?: boolean
+): void => {
+  const combine = getCombine<Schema, Schema>(override)
   schema.schemaJSON = R.mapObjIndexed(
-      // @ts-ignore
-    model => combine(model, getDefaultModelProps({ schema, model })), schema.schemaJSON
+    (model) => combine(model, getDefaultModelProps({ schema, model })),
+    schema.schemaJSON
   )
 }
 
-export const _mergeDefaultFieldAttr = (schema: SchemaBuilderType, getDefaultFieldProps: any, override?: boolean) => {
-  const combine = getCombine(override)
+export const _mergeDefaultFieldAttr = (
+  schema: SchemaBuilderType,
+  getDefaultFieldProps: ({
+    schema,
+    model,
+    field
+  }: {
+    schema: SchemaBuilderType
+    model: Schema
+    field: Field
+  }) => Field,
+  override?: boolean
+): void => {
+  const combine = getCombine<Field, Field>(override)
   schema.schemaJSON = R.map(
-    model => R.assoc(
-      'fields',
-      R.map(
-          // @ts-ignore
-        field => combine(field, getDefaultFieldProps({ schema, model, field })),
-        R.prop('fields', model)
+    (model) =>
+      R.assoc(
+        'fields',
+        R.mapObjIndexed(
+          (field: Field) =>
+            combine(field, getDefaultFieldProps({ schema, model, field })),
+          R.prop('fields', model)
+        ),
+        model
       ),
-      model
-    ),
     schema.schemaJSON
   )
 }
