@@ -9,6 +9,7 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "build": "rm -rf lib && tsc",
+    "lint": "npx eslint .",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"

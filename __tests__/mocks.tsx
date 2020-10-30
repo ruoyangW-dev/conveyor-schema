@@ -1,14 +1,11 @@
-import React from 'react'
-import type { FieldTypeObject, SchemaJSON } from '../src/schemaJson'
-
-const DetailComponent: React.FC = () => <span>hello</span>
+import type { SchemaJSON } from '../src/schemaJson'
 
 export const mockSchema: SchemaJSON = {
   foo: {
     fields: {
       bar: {
         components: {
-          cell: () => 2
+          cell: (): number => 2
         },
         displayName: 'FOO',
         fieldName: 'bar',
