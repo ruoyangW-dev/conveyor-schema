@@ -67,6 +67,33 @@ export const _getFieldLabel = ({
   }
   return displayName
 }
+export const _getNoDataDisplayValue = ({
+  schema,
+  modelName,
+  fieldName,
+  node,
+  customProps
+}: {
+  schema: SchemaBuilderType
+  modelName: string
+  fieldName: string
+  node?: NodeType
+  customProps?: any
+}): string => {
+  const model = schema.getModel(modelName)
+  const noDataDisplayValue = model.fields[fieldName].noDataDisplayValue || 'N/A'
+
+  if (typeof noDataDisplayValue === 'function') {
+    return noDataDisplayValue({
+      schema,
+      modelName,
+      fieldName,
+      node,
+      customProps
+    })
+  }
+  return noDataDisplayValue
+}
 
 export const _getModelLabel = ({
   schema,

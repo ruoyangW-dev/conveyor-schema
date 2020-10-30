@@ -119,7 +119,9 @@ export interface Field {
   hideable?: boolean
 
   /** Value to display when a field has no data */
-  noDataDisplayValue?: string | (() => string)
+  noDataDisplayValue?:
+    | string
+    | ((props?: CallbackProps & { node?: NodeType }) => string)
 
   /** Whether should be queried while fetching detail page; by default
    * the query will look at 'showDetail' prop but, if showDetail is

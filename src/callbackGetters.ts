@@ -51,16 +51,13 @@ export const _isRowEditable = ({
   modelName,
   node,
   parentNode,
-  fieldOrder = [],
+  fieldOrder = Object.keys(node || {}).filter((key) => key !== '__typename'),
   customProps
 }: Omit<CallbackProps, 'fieldName'> & {
   node?: NodeType
   parentNode?: NodeType
   fieldOrder?: string[]
 }): boolean => {
-  // if (!fieldOrder) {
-  //   fieldOrder = Object.keys(node)
-  // }
   for (const index in fieldOrder) {
     const fieldName = fieldOrder[index]
     if (

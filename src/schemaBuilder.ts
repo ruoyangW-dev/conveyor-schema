@@ -146,6 +146,27 @@ export class SchemaBuilder {
       customProps
     })
   }
+
+  getNoDataDisplayValue({
+    modelName,
+    fieldName,
+    node,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    customProps?: any
+  }): string {
+    return commonGetters._getNoDataDisplayValue({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      customProps
+    })
+  }
+
   getFieldLabel({
     modelName,
     fieldName,
@@ -168,6 +189,7 @@ export class SchemaBuilder {
       customProps
     })
   }
+
   getModelLabel({
     modelName,
     node,
@@ -188,6 +210,7 @@ export class SchemaBuilder {
       customProps
     })
   }
+
   getModelLabelPlural({
     modelName,
     data,
