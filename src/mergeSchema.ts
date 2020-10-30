@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import type { Field, Schema, SchemaJSON } from './schemaJson'
+import type { Field, Fields, Schema, SchemaJSON } from './schemaJson'
 import { SchemaBuilderType } from './schemaBuilder'
 
 // helpers to merge remote schema or attributes into schemaJSON object
@@ -49,14 +49,15 @@ export const _mergeDefaultFieldAttr = (
   override?: boolean
 ): void => {
   const combine = getCombine<Field, Field>(override)
-  schema.schemaJSON = R.map(
+
+  schema.schemaJSON = R.mapObjIndexed(
     (model) =>
-      R.assoc(
+      R.assoc<Fields, Schema, 'fields'>(
         'fields',
         R.mapObjIndexed(
           (field: Field) =>
             combine(field, getDefaultFieldProps({ schema, model, field })),
-          R.prop('fields', model)
+          model.fields
         ),
         model
       ),

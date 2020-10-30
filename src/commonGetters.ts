@@ -1,10 +1,18 @@
-import * as R from 'ramda'
 import {
   humanizeField,
   humanizeModel,
   humanizeModelPlural
 } from './stringHelper'
 import { SchemaBuilderType, NodeType, DataType } from './schemaBuilder'
+import {
+  BasicFieldType,
+  CallbackProps,
+  Field,
+  Fields,
+  RelFieldType,
+  Schema
+} from './schemaJson'
+import { SchemaBuilder } from './schemaBuilder'
 
 // common name/title getters
 
@@ -16,21 +24,17 @@ export const _getDisplayValue = ({
   modelName,
   node,
   customProps
-}: {
-  schema: SchemaBuilderType
-  modelName: string
-  node?: NodeType
-  customProps?: any
-}): string => {
+}: Omit<CallbackProps, 'fieldName'> & { node?: NodeType }): string => {
   const model = schema.getModel(modelName)
   // the displayField indicates which field 'represents' the entire model (usually 'name')
-  const displayField = R.propOr('name', 'displayField', model)
-  if (R.type(displayField) === 'Function') {
-    // @ts-ignore
+  //const displayField = R.propOr('name', 'displayField', model)
+  const { displayField = 'name' } = model
+
+  if (typeof displayField === 'function') {
     return displayField({ schema, modelName, node, customProps })
   }
-  // @ts-ignore
-  return R.prop(displayField, node)
+
+  return node?.displayField
 }
 
 export const _getFieldLabel = ({
@@ -40,25 +44,21 @@ export const _getFieldLabel = ({
   node,
   data,
   customProps
-}: {
-  schema: SchemaBuilderType
-  modelName: string
-  fieldName: string
-  node?: NodeType
-  data?: DataType
-  customProps?: any
-}) => {
+}: CallbackProps & { node?: NodeType; data?: DataType }): string => {
   const defaultValue = humanizeField(fieldName)
-  const displayName = R.pathOr(
-    defaultValue,
-    [modelName, 'fields', fieldName, 'displayName'],
-    schema.schemaJSON
-  )
-  if (R.type(displayName) === 'Function') {
-    // @ts-ignore
+  // const displayName = R.pathOr(
+  //   defaultValue,
+  //   [modelName, 'fields', fieldName, 'displayName'],
+  //   schema.schemaJSON
+  // )
+  const displayName =
+    schema.schemaJSON[modelName]?.fields[fieldName]?.displayName ?? defaultValue
+
+  if (typeof displayName === 'function') {
     return displayName({
       schema,
       modelName,
+      fieldName,
       node,
       data,
       defaultValue,
@@ -74,21 +74,14 @@ export const _getModelLabel = ({
   node,
   data,
   customProps
-}: {
-  schema: SchemaBuilderType
-  modelName: string
+}: Omit<CallbackProps, 'fieldName'> & {
   node?: NodeType
   data?: DataType
-  customProps?: any
-}) => {
+}): string => {
   const defaultValue = humanizeModel(modelName)
-  const displayName = R.pathOr(
-    defaultValue,
-    [modelName, 'displayName'],
-    schema.schemaJSON
-  )
-  if (R.type(displayName) === 'Function') {
-    // @ts-ignore
+  const displayName = schema.schemaJSON[modelName].displayName ?? defaultValue
+
+  if (typeof displayName === 'function') {
     return displayName({
       schema,
       modelName,
@@ -106,20 +99,17 @@ export const _getModelLabelPlural = ({
   modelName,
   data,
   customProps
-}: {
-  schema: SchemaBuilderType
-  modelName: string
-  data?: DataType
-  customProps?: any
-}) => {
+}: Omit<CallbackProps, 'fieldName'> & { data?: DataType }): string => {
   const defaultValue = humanizeModelPlural(modelName)
-  const displayName = R.pathOr(
-    defaultValue,
-    [modelName, 'displayNamePlural'],
-    schema.schemaJSON
-  )
-  if (R.type(displayName) === 'Function') {
-    // @ts-ignore
+  // const displayName = R.pathOr(
+  //   defaultValue,
+  //   [modelName, 'displayNamePlural'],
+  //   schema.schemaJSON
+  // )
+  const displayName =
+    schema.schemaJSON[modelName].displayNamePlural ?? defaultValue
+
+  if (typeof displayName === 'function') {
     return displayName({ schema, modelName, data, defaultValue, customProps })
   }
   return displayName
@@ -127,52 +117,53 @@ export const _getModelLabelPlural = ({
 
 // common getters
 
-export const _getModel = (schema: SchemaBuilderType, modelName: string) =>
-  R.path(['schemaJSON', modelName], schema)
+export const _getModel = (
+  schema: SchemaBuilderType,
+  modelName: string
+): Schema => schema.schemaJSON[modelName]
 
 export const _getModelAttribute = (
   schema: SchemaBuilderType,
   modelName: string,
   attributeName: string
-) =>
-  // @ts-ignore
-  R.prop(attributeName, schema.getModel(modelName))
+): any => _getModel(schema, modelName)[attributeName]
+//R.prop(attributeName, schema.getModel(modelName))
 
-export const _getActions = (schema: SchemaBuilderType, modelName: string) => {
-  return schema.getModelAttribute(modelName, 'actions')
-}
+export const _getActions = (
+  schema: SchemaBuilder,
+  modelName: string
+): Schema['actions'] => schema.getActions(modelName)
 
-export const _getFields = (schema: SchemaBuilderType, modelName: string) => {
-  return schema.getModelAttribute(modelName, 'fields')
-}
+export const _getFields = (schema: SchemaBuilder, modelName: string): Fields =>
+  schema.getFields(modelName)
 
 export const _getField = (
-  schema: SchemaBuilderType,
+  schema: SchemaBuilder,
   modelName: string,
   fieldName: string
-) =>
-  // @ts-ignore
-  R.prop(fieldName, schema.getFields(modelName))
+): Field | undefined => schema.getFields(modelName)[fieldName]
 
 export const _getType = (
   schema: SchemaBuilderType,
   modelName: string,
   fieldName: string
-) => {
+): BasicFieldType | RelFieldType | undefined => {
   const field = schema.getField(modelName, fieldName)
-  if (schema.isRel(modelName, fieldName)) {
-    return R.path(['type', 'type'], field)
+  if (!field) return
+  if (typeof field.type === 'object') {
+    return field.type.type
   }
-  // @ts-ignore
-  return R.prop('type', field)
+
+  return field.type //R.prop('type', field)
 }
 
 export const _getEnumLabel = (
   schema: SchemaBuilderType,
   modelName: string,
   fieldName: string,
-  value?: any
-) => {
+  value?: string
+): string | undefined => {
   const field = schema.getField(modelName, fieldName)
-  return R.path(['choices', value], field)
+  if (!field || !value) return
+  return field.choices?.[value]
 }
