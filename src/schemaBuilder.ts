@@ -722,6 +722,9 @@ export class SchemaBuilder {
   isRel(modelName: string, fieldName: string): boolean {
     return isFieldType._isRel(this.schemaJSON, modelName, fieldName)
   }
+  isString(modelName: string, fieldName: string): boolean {
+    return isFieldType._isString(this.schemaJSON, modelName, fieldName)
+  }
   isEnum(modelName: string, fieldName: string): boolean {
     return isFieldType._isEnum(this.schemaJSON, modelName, fieldName)
   }

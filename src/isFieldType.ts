@@ -46,7 +46,13 @@ export const _isRel = (
 
 // string types
 
-// todo: use inputTypes instead of string for comparison
+export const _isString = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  schemaJSON[modelName].fields[fieldName].type === inputTypes.STRING_TYPE
+
 export const _isEnum = (
   schemaJSON: SchemaJSON,
   modelName: string,
