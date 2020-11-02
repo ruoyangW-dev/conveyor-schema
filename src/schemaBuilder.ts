@@ -12,6 +12,7 @@ import type {
   Field,
   Fields,
   FieldTypeObject,
+  RelFieldType,
   Schema,
   SchemaJSON
 } from './schemaJson'
@@ -252,8 +253,8 @@ export class SchemaBuilder {
   getType(
     modelName: string,
     fieldName: string
-  ): FieldTypeObject | BasicFieldType | undefined {
-    return this.getField(modelName, fieldName)?.type
+  ): BasicFieldType | RelFieldType | undefined {
+    return commonGetters._getType(this, modelName, fieldName)
     //return commonGetters._getType(this, modelName, fieldName)
   }
   getEnumLabel(
