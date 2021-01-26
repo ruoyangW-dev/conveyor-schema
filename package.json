@@ -1,6 +1,6 @@
 {
   "name": "@autoinvent/conveyor-schema",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "a schema helper library for conveyor",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

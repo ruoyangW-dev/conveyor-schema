@@ -1,4 +1,4 @@
-Unreleased
+Version 0.2.0
 ---------------
 
 Added commonGetter for noDataDisplayValue
