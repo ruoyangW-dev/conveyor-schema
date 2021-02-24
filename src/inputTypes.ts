@@ -4,6 +4,7 @@ export const inputTypes = {
   FLOAT_TYPE: 'float',
   INT_TYPE: 'int',
   DATE_TYPE: 'date',
+  DATETIME_TYPE: 'datetime',
   TEXTAREA_TYPE: 'text',
   ENUM_TYPE: 'enum',
   URL_TYPE: 'url',

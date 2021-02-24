@@ -1,3 +1,8 @@
+Version 0.2.1
+---------------
+
+Added DateTime to inputTypes
+
 Version 0.2.0
 ---------------
 
