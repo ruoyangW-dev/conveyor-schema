@@ -183,8 +183,10 @@ export const _shouldDisplayIndex = ({
   //   schema.getFieldConditions(modelName, fieldName)
   // )
 
-  const displayCondition = schema.getFieldConditions(modelName, fieldName)
-    ?.index
+  const displayCondition = schema.getFieldConditions(
+    modelName,
+    fieldName
+  )?.index
   return schema.shouldDisplay({
     modelName,
     fieldName,
@@ -200,8 +202,10 @@ export const _shouldDisplayDetail = ({
   node,
   customProps
 }: CallbackProps & { node?: NodeType }): boolean => {
-  const displayCondition = schema.getFieldConditions(modelName, fieldName)
-    ?.detail
+  const displayCondition = schema.getFieldConditions(
+    modelName,
+    fieldName
+  )?.detail
   return schema.shouldDisplay({
     modelName,
     fieldName,
@@ -217,8 +221,10 @@ export const _shouldDisplayCreate = ({
   node,
   customProps
 }: CallbackProps & { node?: NodeType }): boolean => {
-  const displayCondition = schema.getFieldConditions(modelName, fieldName)
-    ?.create
+  const displayCondition = schema.getFieldConditions(
+    modelName,
+    fieldName
+  )?.create
   return schema.shouldDisplay({
     modelName,
     fieldName,

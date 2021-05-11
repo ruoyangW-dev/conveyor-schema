@@ -11,7 +11,6 @@ import type {
   DisplayConditions,
   Field,
   Fields,
-  FieldTypeObject,
   RelFieldType,
   Schema,
   SchemaJSON
