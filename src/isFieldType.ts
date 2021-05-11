@@ -1,58 +1,134 @@
 import * as R from 'ramda'
 import { inputTypes } from './inputTypes'
+import { SchemaJSON } from './schemaJson'
 
 // object types
 
-export const _isOneToMany = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) === inputTypes.ONE_TO_MANY_TYPE
-}
+export const _isOneToMany = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) ===
+  inputTypes.ONE_TO_MANY_TYPE
 
-export const _isManyToMany = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) === inputTypes.MANY_TO_MANY_TYPE
-}
+export const _isManyToMany = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) ===
+  inputTypes.MANY_TO_MANY_TYPE
 
-export const _isManyToOne = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) === inputTypes.MANY_TO_ONE_TYPE
-}
+export const _isManyToOne = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) ===
+  inputTypes.MANY_TO_ONE_TYPE
 
-export const _isOneToOne = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) === inputTypes.ONE_TO_ONE_TYPE
-}
+export const _isOneToOne = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type', 'type'], schemaJSON) ===
+  inputTypes.ONE_TO_ONE_TYPE
 
-export const _isRel = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return typeof (R.path([modelName, 'fields', fieldName, 'type'], schemaJSON)) === 'object'
-}
+export const _isRel = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  typeof R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  'object'
 
 // string types
 
-// todo: use inputTypes instead of string for comparison
-export const _isEnum = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'enum'
-}
-export const _isURL = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'url'
-}
-export const _isEmail = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'email'
-}
-export const _isPhone = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'phone'
-}
-export const _isCurrency = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'currency'
-}
-export const _isDate = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'date'
-}
-export const _isTextArea = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'text'
-}
-export const _isFile = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'file'
-}
-export const _isBoolean = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'boolean'
-}
-export const _isPassword = (schemaJSON: any, modelName: string, fieldName: string) => {
-  return R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) === 'password'
-}
+export const _isString = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  schemaJSON[modelName].fields[fieldName].type === inputTypes.STRING_TYPE
+
+export const _isEnum = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.ENUM_TYPE
+
+export const _isURL = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.URL_TYPE
+
+export const _isEmail = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.EMAIL_TYPE
+
+export const _isPhone = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.PHONE_TYPE
+
+export const _isCurrency = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.CURRENCY_TYPE
+
+export const _isDate = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.DATE_TYPE
+
+export const _isTextArea = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.TEXTAREA_TYPE
+
+export const _isFile = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.FILE_TYPE
+
+export const _isBoolean = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.BOOLEAN_TYPE
+
+export const _isPassword = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string
+): boolean =>
+  R.path([modelName, 'fields', fieldName, 'type'], schemaJSON) ===
+  inputTypes.PASSWORD_TYPE
