@@ -115,7 +115,7 @@ export class SchemaBuilder {
     return commonGetters._getFieldLabel({ schema: this, modelName, fieldName, node, data, customProps })
   }
   getModelLabel({ modelName, node, data, customProps } :
-                    { modelName: string, fieldName: string, node?: NodeType, data?: DataType, customProps?: any }) {
+                    { modelName: string, node?: NodeType, data?: DataType, customProps?: any }) {
     return commonGetters._getModelLabel({ schema: this, modelName, node, data, customProps })
   }
   getModelLabelPlural({ modelName, data, customProps }:
