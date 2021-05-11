@@ -62,3 +62,8 @@ export const _getTableLinkField = (schema: SchemaBuilderType, modelName: string,
   // @ts-ignore
   return schemaDefinedLinkField || (fieldOrder.includes('name') ? 'name' : null)
 }
+
+export const _getTableFields = (schema: SchemaBuilderType, modelName: string, fieldName: string) => {
+  const model = schema.getModel(modelName)
+  return R.path(['fields', fieldName, 'type', 'tableFields'], model)
+}
