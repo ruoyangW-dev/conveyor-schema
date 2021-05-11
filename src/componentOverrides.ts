@@ -12,7 +12,7 @@ export const _getFieldOverride = (
   fieldName: string,
   fieldKey: keyof FieldComponents
 ): (() => any) | undefined =>
-  schemaJSON[modelName].fields[fieldName].components?.[fieldKey]
+  schemaJSON?.[modelName]?.fields?.[fieldName]?.components?.[fieldKey]
 
 // get component overrides for model level
 
@@ -20,5 +20,4 @@ export const _getModelOverride = (
   schemaJSON: SchemaJSON,
   modelName: string,
   modelKey: keyof SchemaComponents
-): (() => any) | undefined => schemaJSON[modelName].components?.[modelKey]
-//R.path<string | undefined>([modelName, 'components', modelKey], schemaJSON)
+): (() => any) | undefined => schemaJSON?.[modelName]?.components?.[modelKey]

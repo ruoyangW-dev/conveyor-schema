@@ -4,15 +4,7 @@ import {
   humanizeModelPlural
 } from './stringHelper'
 import { SchemaBuilderType, NodeType, DataType } from './schemaBuilder'
-import {
-  BasicFieldType,
-  CallbackProps,
-  Field,
-  Fields,
-  RelFieldType,
-  Schema
-} from './schemaJson'
-import { SchemaBuilder } from './schemaBuilder'
+import { BasicFieldType, CallbackProps, RelFieldType } from './schemaJson'
 
 // common name/title getters
 
@@ -34,7 +26,7 @@ export const _getDisplayValue = ({
     return displayField({ schema, modelName, node, customProps })
   }
 
-  return node?.displayField
+  return node?.[displayField]
 }
 
 export const _getFieldLabel = ({
@@ -143,32 +135,6 @@ export const _getModelLabelPlural = ({
 }
 
 // common getters
-
-export const _getModel = (
-  schema: SchemaBuilderType,
-  modelName: string
-): Schema => schema.schemaJSON[modelName]
-
-export const _getModelAttribute = (
-  schema: SchemaBuilderType,
-  modelName: string,
-  attributeName: string
-): any => _getModel(schema, modelName)[attributeName]
-//R.prop(attributeName, schema.getModel(modelName))
-
-export const _getActions = (
-  schema: SchemaBuilder,
-  modelName: string
-): Schema['actions'] => schema.getActions(modelName)
-
-export const _getFields = (schema: SchemaBuilder, modelName: string): Fields =>
-  schema.getFields(modelName)
-
-export const _getField = (
-  schema: SchemaBuilder,
-  modelName: string,
-  fieldName: string
-): Field | undefined => schema.getFields(modelName)[fieldName]
 
 export const _getType = (
   schema: SchemaBuilderType,

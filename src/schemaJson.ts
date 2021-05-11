@@ -317,6 +317,9 @@ export interface Schema {
   /** name of the field/column in a table that links to the detail page, a value of null means no link to the model should be displayed on a table */
   tableLinkField?: null | string
 
+  /** Whether the given model should be displayed on the delete modal */
+  showDeleteModal?: boolean | (() => boolean)
+
   tabs?: any
 
   tooltipFieldOrder?:

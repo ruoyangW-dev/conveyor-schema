@@ -108,7 +108,7 @@ export class SchemaBuilder {
     getDefaultModelProps: (props: {
       schema: SchemaBuilder
       model: Schema
-    }) => Schema,
+    }) => Partial<Schema>,
     override = false
   ): void {
     mergeSchema._mergeDefaultModelAttr(this, getDefaultModelProps, override)
@@ -231,30 +231,27 @@ export class SchemaBuilder {
   // common getters
 
   getModel(modelName: string): Schema {
-    return this.schemaJSON[modelName]
+    // TODO: REMOVE WHEN CONVEYOR USES TYPESCRIPT
+    return this.schemaJSON[modelName] ?? {}
   }
   // this function should not exist!!
   getModelAttribute(modelName: string, attributeName: string): any {
-    return this.getModel(modelName)[attributeName]
-    //return commonGetters._getModelAttribute(this, modelName, attributeName)
+    return this.getModel(modelName)?.[attributeName]
   }
   getActions(modelName: string): Schema['actions'] {
-    return commonGetters._getActions(this, modelName)
+    return this.getModel(modelName)?.actions
   }
   getFields(modelName: string): Fields {
-    return this.getModel(modelName).fields
-    //return commonGetters._getFields(this, modelName)
+    return this.getModel(modelName)?.fields
   }
   getField(modelName: string, fieldName: string): Field | undefined {
-    return this.getFields(modelName)[fieldName]
-    //return commonGetters._getField(this, modelName, fieldName)
+    return this.getFields(modelName)?.[fieldName]
   }
   getType(
     modelName: string,
     fieldName: string
   ): BasicFieldType | RelFieldType | undefined {
     return commonGetters._getType(this, modelName, fieldName)
-    //return commonGetters._getType(this, modelName, fieldName)
   }
   getEnumLabel(
     modelName: string,

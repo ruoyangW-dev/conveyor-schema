@@ -25,10 +25,10 @@ export const _mergeDefaultModelAttr = (
   getDefaultModelProps: (props: {
     schema: SchemaBuilderType
     model: Schema
-  }) => Schema,
+  }) => Partial<Schema>,
   override?: boolean
 ): void => {
-  const combine = getCombine<Schema, Schema>(override)
+  const combine = getCombine<Schema, Partial<Schema>>(override)
   schema.schemaJSON = R.mapObjIndexed(
     (model) => combine(model, getDefaultModelProps({ schema, model })),
     schema.schemaJSON

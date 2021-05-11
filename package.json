@@ -1,6 +1,6 @@
 {
   "name": "@autoinvent/conveyor-schema",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "a schema helper library for conveyor",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -26,7 +26,6 @@
     "@types/react": "^17.0.5",
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
-    "babel-plugin-ramda": "^2.0.0",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",

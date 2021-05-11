@@ -466,7 +466,7 @@ export const _getShownFields = ({
         break
       default:
         //show = R.prop(type, schema.getField(modelName, fieldName))
-        show = schema.getField(modelName, fieldName)?.type ?? true
+        show = schema.getField(modelName, fieldName)?.[type] ?? false
     }
     if (typeof show === 'function') {
       show = show({
@@ -492,7 +492,7 @@ export const _getDetailFields = ({
   //   'detailFieldOrder',
   //   schema.getModel(modelName)
   // )
-  const { detailFieldOrder = [] } = schema.getModel(modelName)
+  const { detailFieldOrder } = schema.getModel(modelName)
 
   const defaultOrder = schema.getShownFields({
     modelName,
@@ -508,7 +508,7 @@ export const _getDetailFields = ({
       defaultOrder,
       customProps
     })
-  } else if (R.type(detailFieldOrder) === 'Array') {
+  } else if (Array.isArray(detailFieldOrder)) {
     return detailFieldOrder
   }
   return defaultOrder
@@ -520,7 +520,7 @@ export const _getIndexFields = ({
   data,
   customProps
 }: Omit<CallbackProps, 'fieldName'> & { data?: DataType }): string[] => {
-  const { indexFieldOrder = [] } = schema.getModel(modelName)
+  const { indexFieldOrder } = schema.getModel(modelName)
   const defaultOrder = schema.getShownFields({
     modelName,
     type: 'showIndex',
@@ -535,7 +535,7 @@ export const _getIndexFields = ({
       defaultOrder,
       customProps
     })
-  } else if (R.type(indexFieldOrder) === 'Array') {
+  } else if (Array.isArray(indexFieldOrder)) {
     return indexFieldOrder
   }
   return defaultOrder
@@ -546,7 +546,7 @@ export const _getCreateFields = ({
   modelName,
   customProps
 }: Omit<CallbackProps, 'fieldName'>): string[] => {
-  const { createFieldOrder = [] } = schema.getModel(modelName)
+  const { createFieldOrder } = schema.getModel(modelName)
 
   const defaultOrder = schema.getShownFields({
     modelName,
@@ -555,7 +555,7 @@ export const _getCreateFields = ({
   })
   if (typeof createFieldOrder === 'function') {
     return createFieldOrder({ schema, modelName, defaultOrder, customProps })
-  } else if (R.type(createFieldOrder) === 'Array') {
+  } else if (Array.isArray(createFieldOrder)) {
     return createFieldOrder
   }
   return defaultOrder
@@ -566,7 +566,7 @@ export const _getTooltipFields = ({
   modelName,
   customProps
 }: Omit<CallbackProps, 'fieldName'>): string[] => {
-  const { tooltipFieldOrder = [] } = schema.getModel(modelName)
+  const { tooltipFieldOrder } = schema.getModel(modelName)
   const defaultOrder = schema.getShownFields({
     modelName,
     type: 'showTooltip',
@@ -574,7 +574,7 @@ export const _getTooltipFields = ({
   })
   if (typeof tooltipFieldOrder === 'function') {
     return tooltipFieldOrder({ schema, modelName, defaultOrder, customProps })
-  } else if (R.type(tooltipFieldOrder) === 'Array') {
+  } else if (Array.isArray(tooltipFieldOrder)) {
     return tooltipFieldOrder
   }
   return defaultOrder
