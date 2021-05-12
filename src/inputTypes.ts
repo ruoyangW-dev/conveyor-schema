@@ -1,4 +1,3 @@
-
 export const inputTypes = {
   STRING_TYPE: 'string',
   FLOAT_TYPE: 'float',
@@ -19,8 +18,8 @@ export const inputTypes = {
   RADIO_TYPE: 'radio',
   ID_TYPE: 'ID',
   CHECKBOX_TYPE: 'checkbox', // not used
-  MANY_TO_ONE_TYPE: 'ManyToOne',  // single 'ToOne'
-  ONE_TO_ONE_TYPE: 'OneToOne',  // single 'ToOne'
-  ONE_TO_MANY_TYPE: 'OneToMany',  // multiple
+  MANY_TO_ONE_TYPE: 'ManyToOne', // single 'ToOne'
+  ONE_TO_ONE_TYPE: 'OneToOne', // single 'ToOne'
+  ONE_TO_MANY_TYPE: 'OneToMany', // multiple
   MANY_TO_MANY_TYPE: 'ManyToMany' // multiple
 }

@@ -1,3 +1,9 @@
+Version 0.3.0
+---------------
+
+Typescript improvements
+Added getter for relationship table fields
+
 Version 0.2.1
 ---------------
 

@@ -11,3 +11,4 @@ build.sh
 /*.tgz
 yalc.lock
 /.yalc
+.github/workflows/CI.yml
