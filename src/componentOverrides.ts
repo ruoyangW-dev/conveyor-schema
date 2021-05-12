@@ -1,11 +1,23 @@
-import * as R from 'ramda'
+import type {
+  FieldComponents,
+  SchemaComponents,
+  SchemaJSON
+} from './schemaJson'
 
 // get component overrides for field level
 
-export const _getFieldOverride = (schemaJSON: any, modelName: string, fieldName: string, fieldKey: string) =>
-  R.path([modelName, 'fields', fieldName, 'components', fieldKey], schemaJSON)
+export const _getFieldOverride = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  fieldName: string,
+  fieldKey: keyof FieldComponents
+): (() => any) | undefined =>
+  schemaJSON?.[modelName]?.fields?.[fieldName]?.components?.[fieldKey]
 
 // get component overrides for model level
 
-export const _getModelOverride = (schemaJSON: any, modelName: string, modelKey: string) =>
-  R.path([modelName, 'components', modelKey], schemaJSON)
+export const _getModelOverride = (
+  schemaJSON: SchemaJSON,
+  modelName: string,
+  modelKey: keyof SchemaComponents
+): (() => any) | undefined => schemaJSON?.[modelName]?.components?.[modelKey]

@@ -4,6 +4,17 @@ import * as mergeSchema from './mergeSchema'
 import * as callbackGetters from './callbackGetters'
 import * as miscGetters from './miscGetters'
 import { _getModelOverride, _getFieldOverride } from './componentOverrides'
+import type {
+  BasicFieldType,
+  CallbackProps,
+  DisplayCondition,
+  DisplayConditions,
+  Field,
+  Fields,
+  RelFieldType,
+  Schema,
+  SchemaJSON
+} from './schemaJson'
 
 /* Notes:
 
@@ -72,207 +83,622 @@ too similar, or require copious explanation/ differentiation.
 
 * */
 
-export type SchemaBuilderType = SchemaBuilder
+export type SchemaBuilderType = SchemaBuilder //why???
 
 export interface NodeType {
-  __typename: string;
-  [key: string]: any,
+  __typename: string
+  [key: string]: any
 }
 
-export type DataType = [ NodeType ]
+export type DataType = [NodeType]
 
 export class SchemaBuilder {
-  public schemaJSON: any;
+  public schemaJSON: SchemaJSON
 
-  constructor(schemaJSON: any) {
+  constructor(schemaJSON: SchemaJSON) {
     this.schemaJSON = schemaJSON
   }
 
   // merge remote schema or default props
 
-  mergeSchema(remoteSchema: any, override?: boolean) {
+  mergeSchema(remoteSchema: SchemaJSON, override = false): void {
     mergeSchema._mergeSchema(this, remoteSchema, override)
   }
-  mergeDefaultModelAttr(getDefaultModelProps: any, override?: boolean) {
+  mergeDefaultModelAttr(
+    getDefaultModelProps: (props: {
+      schema: SchemaBuilder
+      model: Schema
+    }) => Partial<Schema>,
+    override = false
+  ): void {
     mergeSchema._mergeDefaultModelAttr(this, getDefaultModelProps, override)
   }
-  mergeDefaultFieldAttr(getDefaultFieldProps: any, override?: boolean) {
+  mergeDefaultFieldAttr(
+    getDefaultFieldProps: ({
+      schema,
+      model,
+      field
+    }: {
+      schema: SchemaBuilderType
+      model: Schema
+      field: Field
+    }) => Field,
+    override = false
+  ): void {
     mergeSchema._mergeDefaultFieldAttr(this, getDefaultFieldProps, override)
   }
 
   // common name/title getters
 
-  getDisplayValue({ modelName, node, customProps }:
-                      { modelName: string, node?: NodeType, customProps?: any }) {
-    return commonGetters._getDisplayValue({ schema: this, modelName, node, customProps })
+  getDisplayValue({
+    modelName,
+    node,
+    customProps
+  }: {
+    modelName: string
+    node?: NodeType
+    customProps?: any
+  }): string {
+    return commonGetters._getDisplayValue({
+      schema: this,
+      modelName,
+      node,
+      customProps
+    })
   }
-  getNoDataDisplayValue({ modelName, fieldName, node, customProps }:
-                      { modelName: string, fieldName: string, node?: NodeType, customProps?: any }) {
-    return commonGetters._getNoDataDisplayValue({ schema: this, modelName, fieldName, node, customProps })
+
+  getNoDataDisplayValue({
+    modelName,
+    fieldName,
+    node,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    customProps?: any
+  }): string {
+    return commonGetters._getNoDataDisplayValue({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      customProps
+    })
   }
-  getFieldLabel({ modelName, fieldName, node, data, customProps } :
-                    { modelName: string, fieldName: string, node?: NodeType, data?: DataType, customProps?: any }) {
-    return commonGetters._getFieldLabel({ schema: this, modelName, fieldName, node, data, customProps })
+
+  getFieldLabel({
+    modelName,
+    fieldName,
+    node,
+    data,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    data?: DataType
+    customProps?: any
+  }): string {
+    return commonGetters._getFieldLabel({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      data,
+      customProps
+    })
   }
-  getModelLabel({ modelName, node, data, customProps } :
-                    { modelName: string, fieldName: string, node?: NodeType, data?: DataType, customProps?: any }) {
-    return commonGetters._getModelLabel({ schema: this, modelName, node, data, customProps })
+
+  getModelLabel({
+    modelName,
+    node,
+    data,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    data?: DataType
+    customProps?: any
+  }): string {
+    return commonGetters._getModelLabel({
+      schema: this,
+      modelName,
+      node,
+      data,
+      customProps
+    })
   }
-  getModelLabelPlural({ modelName, data, customProps }:
-                          { modelName: string, data?: DataType, customProps?: any }) {
-    return commonGetters._getModelLabelPlural({ schema: this, modelName, data, customProps })
+
+  getModelLabelPlural({
+    modelName,
+    data,
+    customProps
+  }: {
+    modelName: string
+    data?: DataType
+    customProps?: any
+  }): string {
+    return commonGetters._getModelLabelPlural({
+      schema: this,
+      modelName,
+      data,
+      customProps
+    })
   }
 
   // common getters
 
-  getModel(modelName: string) {
-    return commonGetters._getModel(this, modelName)
+  getModel(modelName: string): Schema {
+    // TODO: REMOVE WHEN CONVEYOR USES TYPESCRIPT
+    return this.schemaJSON[modelName] ?? {}
   }
-  getModelAttribute(modelName: string, attributeName: string) {
-    return commonGetters._getModelAttribute(this, modelName, attributeName)
+  // this function should not exist!!
+  getModelAttribute(modelName: string, attributeName: string): any {
+    return this.getModel(modelName)?.[attributeName]
   }
-  getActions(modelName: string) {
-    return commonGetters._getActions(this, modelName)
+  getActions(modelName: string): Schema['actions'] {
+    return this.getModel(modelName)?.actions
   }
-  getFields(modelName: string) {
-    return commonGetters._getFields(this, modelName)
+  getFields(modelName: string): Fields {
+    return this.getModel(modelName)?.fields
   }
-  getField(modelName: string, fieldName: string) {
-    return commonGetters._getField(this, modelName, fieldName)
+  getField(modelName: string, fieldName: string): Field | undefined {
+    return this.getFields(modelName)?.[fieldName]
   }
-  getType(modelName: string, fieldName: string) {
+  getType(
+    modelName: string,
+    fieldName: string
+  ): BasicFieldType | RelFieldType | undefined {
     return commonGetters._getType(this, modelName, fieldName)
   }
-  getEnumLabel(modelName: string, fieldName: string, value?: any) {
+  getEnumLabel(
+    modelName: string,
+    fieldName: string,
+    value?: string
+  ): string | undefined {
     return commonGetters._getEnumLabel(this, modelName, fieldName, value)
   }
 
   // callback getters
 
-  isTableEditable({ modelName, data, parentNode, fieldOrder, customProps }:
-                      { modelName: string, data: DataType, parentNode?: NodeType, fieldOrder?: [string], customProps?: any }) {
-    return callbackGetters._isTableEditable({ schema: this, modelName, data, parentNode, fieldOrder, customProps })
+  isTableEditable({
+    modelName,
+    data,
+    parentNode,
+    fieldOrder,
+    customProps
+  }: {
+    modelName: string
+    data: DataType
+    parentNode?: NodeType
+    fieldOrder?: string[]
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isTableEditable({
+      schema: this,
+      modelName,
+      data,
+      parentNode,
+      fieldOrder,
+      customProps
+    })
   }
-  isRowEditable({ modelName, node, parentNode, fieldOrder, customProps }:
-                    { modelName: string, node: NodeType, parentNode?: NodeType, fieldOrder?: [string], customProps?: any }) {
-    return callbackGetters._isRowEditable({ schema: this, modelName, node, parentNode, fieldOrder, customProps })
+  isRowEditable({
+    modelName,
+    node,
+    parentNode,
+    fieldOrder,
+    customProps
+  }: {
+    modelName: string
+    node: NodeType
+    parentNode?: NodeType
+    fieldOrder?: string[]
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isRowEditable({
+      schema: this,
+      modelName,
+      node,
+      parentNode,
+      fieldOrder,
+      customProps
+    })
   }
-  isFieldEditable({ modelName, fieldName, node, parentNode, customProps }:
-                      { modelName: string, fieldName: string, node?: NodeType, parentNode?: NodeType, customProps?: any }) {
-    return callbackGetters._isFieldEditable({ schema: this, modelName, fieldName, node, parentNode, customProps })
+  isFieldEditable({
+    modelName,
+    fieldName,
+    node,
+    parentNode,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    parentNode?: NodeType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isFieldEditable({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      parentNode,
+      customProps
+    })
   }
-  isTableDeletable({ modelName, data, parentNode, customProps }:
-                       { modelName: string, data: DataType, parentNode?: NodeType, customProps?: any }) {
-    return callbackGetters._isTableDeletable({ schema: this, modelName, data, parentNode, customProps })
+  isTableDeletable({
+    modelName,
+    data,
+    parentNode,
+    customProps
+  }: {
+    modelName: string
+    data: DataType
+    parentNode?: NodeType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isTableDeletable({
+      schema: this,
+      modelName,
+      data,
+      parentNode,
+      customProps
+    })
   }
-  isDeletable({ modelName, node, parentNode, customProps }:
-                  { modelName: string, node?: NodeType, parentNode?: NodeType, customProps?: any }) {
-    return callbackGetters._isDeletable({ schema: this, modelName, node, parentNode, customProps })
+  isDeletable({
+    modelName,
+    node,
+    parentNode,
+    customProps
+  }: {
+    modelName: string
+    node?: NodeType
+    parentNode?: NodeType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isDeletable({
+      schema: this,
+      modelName,
+      node,
+      parentNode,
+      customProps
+    })
   }
-  isCreatable({ modelName, parentNode, data, customProps }:
-                  { modelName: string, parentNode?: NodeType, data?: DataType, customProps?: any }) {
-    return callbackGetters._isCreatable({ schema: this, modelName, parentNode, data, customProps })
+  isCreatable({
+    modelName,
+    parentNode,
+    data,
+    customProps
+  }: {
+    modelName: string
+    parentNode?: NodeType
+    data?: DataType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isCreatable({
+      schema: this,
+      modelName,
+      parentNode,
+      data,
+      customProps
+    })
   }
-  shouldDisplay ({ modelName, fieldName, node, displayCondition, customProps }:
-                     { modelName: string, fieldName: string, node?: NodeType, displayCondition: any, customProps?: any }) {
-    return callbackGetters._shouldDisplay({ schema: this, modelName, fieldName, node, displayCondition, customProps })
+  shouldDisplay({
+    modelName,
+    fieldName,
+    node,
+    displayCondition,
+    customProps
+  }: Omit<CallbackProps, 'schema'> & {
+    node?: NodeType
+    displayCondition?: DisplayCondition
+  }): boolean {
+    return callbackGetters._shouldDisplay({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      displayCondition,
+      customProps
+    })
   }
-  shouldDisplayIndex({ modelName, fieldName, node, customProps }:
-                         { modelName: string, fieldName: string, node?: NodeType, customProps?: any }) {
-    return callbackGetters._shouldDisplayIndex({ schema: this, modelName, fieldName, node, customProps })
+  shouldDisplayIndex({
+    modelName,
+    fieldName,
+    node,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._shouldDisplayIndex({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      customProps
+    })
   }
-  shouldDisplayDetail({ modelName, fieldName, node, customProps }:
-                          { modelName: string, fieldName: string, node?: NodeType, customProps?: any }) {
-    return callbackGetters._shouldDisplayDetail({ schema: this, modelName, fieldName, node, customProps })
+  shouldDisplayDetail({
+    modelName,
+    fieldName,
+    node,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._shouldDisplayDetail({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      customProps
+    })
   }
-  shouldDisplayCreate({ modelName, fieldName, node, customProps }:
-                          { modelName: string, fieldName: string, node?: NodeType, customProps?: any }) {
-    return callbackGetters._shouldDisplayCreate({ schema: this, modelName, fieldName, node, customProps })
+  shouldDisplayCreate({
+    modelName,
+    fieldName,
+    node,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    node?: NodeType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._shouldDisplayCreate({
+      schema: this,
+      modelName,
+      fieldName,
+      node,
+      customProps
+    })
   }
-  isFieldDisabled({ modelName, fieldName, formStack, customProps }:
-                      { modelName: string, fieldName: string, formStack?: any, customProps?: any }) {
-    return callbackGetters._isFieldDisabled({ schema: this, modelName, fieldName, formStack, customProps })
+  isFieldDisabled({
+    modelName,
+    fieldName,
+    formStack,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    formStack?: any
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isFieldDisabled({
+      schema: this,
+      modelName,
+      fieldName,
+      formStack,
+      customProps
+    })
   }
-  isSortable({ modelName, fieldName, customProps }:
-                 { modelName: string, fieldName: string, customProps?: any }) {
-    return callbackGetters._isSortable({ schema: this, modelName, fieldName, customProps })
+  isSortable({
+    modelName,
+    fieldName,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isSortable({
+      schema: this,
+      modelName,
+      fieldName,
+      customProps
+    })
   }
-  isTableSortable({ modelName, customProps }:
-                      { modelName: string, customProps?: any }) {
-    return callbackGetters._isTableSortable({ schema: this, modelName, customProps })
+  isTableSortable({
+    modelName,
+    customProps
+  }: {
+    modelName: string
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isTableSortable({
+      schema: this,
+      modelName,
+      customProps
+    })
   }
-  isFilterable({ modelName, fieldName, data, customProps }:
-                   { modelName: string, fieldName: string, data?: DataType, customProps?: any }) {
-    return callbackGetters._isFilterable({ schema: this, modelName, fieldName, data, customProps })
+  isFilterable({
+    modelName,
+    fieldName,
+    data,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    data?: DataType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isFilterable({
+      schema: this,
+      modelName,
+      fieldName,
+      data,
+      customProps
+    })
   }
-  isTableFilterable({ modelName, data, customProps }:
-                        { modelName: string, data?: DataType, customProps?: any }) {
-    return callbackGetters._isTableFilterable({ schema: this, modelName, data, customProps })
+  isTableFilterable({
+    modelName,
+    data,
+    customProps
+  }: {
+    modelName: string
+    data?: DataType
+    customProps?: any
+  }): boolean {
+    return callbackGetters._isTableFilterable({
+      schema: this,
+      modelName,
+      data,
+      customProps
+    })
   }
-  getShownFields({ modelName, type, node, data, customProps }:
-                     { modelName: string, type: string, node?: NodeType, data?: DataType, customProps?: any }) {
-    return callbackGetters._getShownFields({ schema: this, modelName, type, node, data, customProps })
+  getShownFields({
+    modelName,
+    type,
+    node,
+    data,
+    customProps
+  }: {
+    modelName: string
+    type: string
+    node?: NodeType
+    data?: DataType
+    customProps?: any
+  }): string[] {
+    return callbackGetters._getShownFields({
+      schema: this,
+      modelName,
+      type,
+      node,
+      data,
+      customProps
+    })
   }
-  getDetailFields({ modelName, node, customProps }:
-                      { modelName: string, node?: NodeType, customProps?: any }) {
-    return callbackGetters._getDetailFields({ schema: this, modelName, node, customProps })
+  getDetailFields({
+    modelName,
+    node,
+    customProps
+  }: {
+    modelName: string
+    node?: NodeType
+    customProps?: any
+  }): string[] {
+    return callbackGetters._getDetailFields({
+      schema: this,
+      modelName,
+      node,
+      customProps
+    })
   }
-  getIndexFields({ modelName, data, customProps }:
-                     { modelName: string, data?: DataType, customProps?: any }) {
-    return callbackGetters._getIndexFields({ schema: this, modelName, data, customProps })
+  getIndexFields({
+    modelName,
+    data,
+    customProps
+  }: {
+    modelName: string
+    data?: DataType
+    customProps?: any
+  }): string[] {
+    return callbackGetters._getIndexFields({
+      schema: this,
+      modelName,
+      data,
+      customProps
+    })
   }
-  getCreateFields({ modelName, customProps }:
-                      { modelName: string, customProps?: any }) {
-    return callbackGetters._getCreateFields({ schema: this, modelName, customProps })
+  getCreateFields({
+    modelName,
+    customProps
+  }: {
+    modelName: string
+    customProps?: any
+  }): string[] {
+    return callbackGetters._getCreateFields({
+      schema: this,
+      modelName,
+      customProps
+    })
   }
-  getTooltipFields({ modelName, customProps }:
-                       { modelName: string, customProps?: any }) {
-    return callbackGetters._getTooltipFields({ schema: this, modelName, customProps })
+  getTooltipFields({
+    modelName,
+    customProps
+  }: {
+    modelName: string
+    customProps?: any
+  }): string[] {
+    return callbackGetters._getTooltipFields({
+      schema: this,
+      modelName,
+      customProps
+    })
   }
-  getOptionsOverride({ modelName, fieldName, options, value, customProps }:
-                         { modelName: string, fieldName: string, options: [], value?: any, customProps?: any }) {
-    return callbackGetters._getOptionsOverride({ schema: this, modelName, fieldName, options, value, customProps })
+  getOptionsOverride({
+    modelName,
+    fieldName,
+    options,
+    value,
+    customProps
+  }: {
+    modelName: string
+    fieldName: string
+    options: []
+    value?: any
+    customProps?: any
+  }): boolean | any[] {
+    return callbackGetters._getOptionsOverride({
+      schema: this,
+      modelName,
+      fieldName,
+      options,
+      value,
+      customProps
+    })
   }
 
   // misc getters
 
-  getFieldConditions(modelName: string, fieldName: string) {
+  getFieldConditions(
+    modelName: string,
+    fieldName: string
+  ): DisplayConditions | undefined {
     return miscGetters._getFieldConditions(this, modelName, fieldName)
   }
-  getFieldDisableCondition(modelName: string, fieldName: string) {
+  getFieldDisableCondition(
+    modelName: string,
+    fieldName: string
+  ): Field['disabled'] {
     return miscGetters._getFieldDisableCondition(this, modelName, fieldName)
   }
-  getDropDownDisableCondition(modelName: string, fieldName: string) {
+  getDropDownDisableCondition(
+    modelName: string,
+    fieldName: string
+  ): Field['disabledDropDown'] {
     return miscGetters._getDropDownDisableCondition(this, modelName, fieldName)
   }
-  getFieldHelpText(modelName: string, fieldName: string) {
+  getFieldHelpText(modelName: string, fieldName: string): string | null {
     return miscGetters._getFieldHelpText(this, modelName, fieldName)
   }
-  getRequiredFields(modelName: string) {
+  getRequiredFields(modelName: string): string[] {
     return miscGetters._getRequiredFields(this, modelName)
   }
-  getHasIndex(modelName: string) {
+  getHasIndex(modelName: string): boolean {
     return miscGetters._getHasIndex(this, modelName)
   }
-  getHasDetail(modelName: string) {
+  getHasDetail(modelName: string): boolean {
     return miscGetters._getHasDetail(this, modelName)
   }
-  getSingleton(modelName: string) {
+  getSingleton(modelName: string): boolean {
     return miscGetters._getSingleton(this, modelName)
   }
-  getEnumChoices(modelName: string, fieldName: string) {
+  getEnumChoices(modelName: string, fieldName: string): Field['choices'] {
     return miscGetters._getEnumChoices(this, modelName, fieldName)
   }
-  getEnumChoiceOrder(modelName: string, fieldName: string) {
+  getEnumChoiceOrder(
+    modelName: string,
+    fieldName: string
+  ): Field['choiceOrder'] {
     return miscGetters._getEnumChoiceOrder(this, modelName, fieldName)
   }
-  getCollapsable(modelName: string, fieldName: string) {
+  getCollapsable(modelName: string, fieldName: string): boolean {
     return miscGetters._getCollapsable(this, modelName, fieldName)
   }
-  getSearchable(modelName: string) {
+  getSearchable(modelName: string): boolean {
     return miscGetters._getSearchable(this, modelName)
   }
-  getTableLinkField(modelName: string, fieldOrder: []) {
+  getTableLinkField(modelName: string, fieldOrder: []): string | null {
     return miscGetters._getTableLinkField(this, modelName, fieldOrder)
   }
   getTableFields(modelName: string, fieldName: string) {
@@ -281,97 +707,125 @@ export class SchemaBuilder {
 
   // isFieldType
 
-  isOneToMany(modelName: string, fieldName: string) {
+  isOneToMany(modelName: string, fieldName: string): boolean {
     return isFieldType._isOneToMany(this.schemaJSON, modelName, fieldName)
   }
-  isManyToMany(modelName: string, fieldName: string) {
+  isManyToMany(modelName: string, fieldName: string): boolean {
     return isFieldType._isManyToMany(this.schemaJSON, modelName, fieldName)
   }
-  isManyToOne(modelName: string, fieldName: string) {
+  isManyToOne(modelName: string, fieldName: string): boolean {
     return isFieldType._isManyToOne(this.schemaJSON, modelName, fieldName)
   }
-  isOneToOne(modelName: string, fieldName: string) {
+  isOneToOne(modelName: string, fieldName: string): boolean {
     return isFieldType._isOneToOne(this.schemaJSON, modelName, fieldName)
   }
-  isRel(modelName: string, fieldName: string) {
+  isRel(modelName: string, fieldName: string): boolean {
     return isFieldType._isRel(this.schemaJSON, modelName, fieldName)
   }
-  isEnum(modelName: string, fieldName: string) {
+  isString(modelName: string, fieldName: string): boolean {
+    return isFieldType._isString(this.schemaJSON, modelName, fieldName)
+  }
+  isEnum(modelName: string, fieldName: string): boolean {
     return isFieldType._isEnum(this.schemaJSON, modelName, fieldName)
   }
-  isURL(modelName: string, fieldName: string) {
+  isURL(modelName: string, fieldName: string): boolean {
     return isFieldType._isURL(this.schemaJSON, modelName, fieldName)
   }
-  isEmail(modelName: string, fieldName: string) {
+  isEmail(modelName: string, fieldName: string): boolean {
     return isFieldType._isEmail(this.schemaJSON, modelName, fieldName)
   }
-  isPhone(modelName: string, fieldName: string) {
+  isPhone(modelName: string, fieldName: string): boolean {
     return isFieldType._isPhone(this.schemaJSON, modelName, fieldName)
   }
-  isCurrency(modelName: string, fieldName: string) {
+  isCurrency(modelName: string, fieldName: string): boolean {
     return isFieldType._isCurrency(this.schemaJSON, modelName, fieldName)
   }
-  isDate(modelName: string, fieldName: string) {
+  isDate(modelName: string, fieldName: string): boolean {
     return isFieldType._isDate(this.schemaJSON, modelName, fieldName)
   }
-  isTextArea(modelName: string, fieldName: string) {
+  isTextArea(modelName: string, fieldName: string): boolean {
     return isFieldType._isTextArea(this.schemaJSON, modelName, fieldName)
   }
-  isFile(modelName: string, fieldName: string) {
+  isFile(modelName: string, fieldName: string): boolean {
     return isFieldType._isFile(this.schemaJSON, modelName, fieldName)
   }
-  isBoolean(modelName: string, fieldName: string) {
+  isBoolean(modelName: string, fieldName: string): boolean {
     return isFieldType._isBoolean(this.schemaJSON, modelName, fieldName)
   }
-  isPassword(modelName: string, fieldName: string) {
+  isPassword(modelName: string, fieldName: string): boolean {
     return isFieldType._isPassword(this.schemaJSON, modelName, fieldName)
   }
 
   // component overrides on field level
 
-  getCellOverride(modelName: string, fieldName: string) {
+  getCellOverride(
+    modelName: string,
+    fieldName: string
+  ): (() => any) | undefined {
     return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'cell')
   }
-  getDetailFieldOverride(modelName: string, fieldName: string) {
+  getDetailFieldOverride(
+    modelName: string,
+    fieldName: string
+  ): (() => any) | undefined {
     return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'detail')
   }
-  getDetailLabelOverride(modelName: string, fieldName: string) {
-    return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'detailLabel')
+  getDetailLabelOverride(
+    modelName: string,
+    fieldName: string
+  ): (() => any) | undefined {
+    return _getFieldOverride(
+      this.schemaJSON,
+      modelName,
+      fieldName,
+      'detailLabel'
+    )
   }
-  getDetailValueOverride(modelName: string, fieldName: string) {
-    return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'detailValue')
+  getDetailValueOverride(
+    modelName: string,
+    fieldName: string
+  ): (() => any) | undefined {
+    return _getFieldOverride(
+      this.schemaJSON,
+      modelName,
+      fieldName,
+      'detailValue'
+    )
   }
-  getInputOverride(modelName: string, fieldName: string) {
+  getInputOverride(
+    modelName: string,
+    fieldName: string
+  ): (() => any) | undefined {
     return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'input')
   }
 
   // component overrides on model level
 
-  getCreateOverride(modelName: string) {
+  getCreateOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'create')
   }
-  getCreateTitleOverride(modelName: string) {
+  getCreateTitleOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'createTitle')
   }
-  getCreatePageOverride(modelName: string) {
+  getCreatePageOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'createPage')
   }
-  getDetailOverride(modelName: string) {
+  getDetailOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'detail')
   }
-  getDetailTitleOverride(modelName: string) {
+  getDetailTitleOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'detailTitle')
   }
-  getDetailPageOverride(modelName: string) {
+  getDetailPageOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'detailPage')
   }
-  getIndexOverride(modelName: string) {
+  getIndexOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'index')
   }
-  getIndexTitleOverride(modelName: string) {
+  getIndexTitleOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'indexTitle')
   }
-  getIndexPageOverride(modelName: string) {
+  getIndexPageOverride(modelName: string): (() => any) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'indexPage')
   }
 }
