@@ -1,5 +1,5 @@
 import { SchemaBuilderType } from './schemaBuilder'
-import type { DisplayConditions, Field } from './schemaJson'
+import { DisplayConditions, Field, isFieldTypeObject } from './schemaJson'
 
 export const _getFieldConditions = (
   schema: SchemaBuilderType,
@@ -100,7 +100,17 @@ export const _getTableLinkField = (
   return schemaDefinedLinkField || (fieldOrder.includes('name') ? 'name' : null)
 }
 
-export const _getTableFields = (schema: SchemaBuilderType, modelName: string, fieldName: string) => {
+export const _getTableFields = (
+  schema: SchemaBuilderType,
+  modelName: string,
+  fieldName: string
+): string[] => {
   const model = schema.getModel(modelName)
-  return R.path(['fields', fieldName, 'type', 'tableFields'], model)
+  const fieldType = model.fields?.[fieldName]?.type
+
+  if (isFieldTypeObject(fieldType)) {
+    return fieldType.tableFields ?? []
+  }
+
+  return []
 }
