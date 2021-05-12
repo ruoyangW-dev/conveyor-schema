@@ -701,6 +701,9 @@ export class SchemaBuilder {
   getTableLinkField(modelName: string, fieldOrder: []): string | null {
     return miscGetters._getTableLinkField(this, modelName, fieldOrder)
   }
+  getTableFields(modelName: string, fieldName: string): string[] {
+    return miscGetters._getTableFields(this, modelName, fieldName)
+  }
 
   // isFieldType
 

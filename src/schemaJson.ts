@@ -43,6 +43,12 @@ export interface FieldTypeObject {
   type: RelFieldType
 }
 
+export const isFieldTypeObject = (
+  fieldType: BasicFieldType | FieldTypeObject | undefined
+): fieldType is FieldTypeObject => {
+  return typeof fieldType === 'object'
+}
+
 export type DisplayCondition =
   | boolean
   | ((props: CallbackProps & { node?: NodeType }) => boolean)
