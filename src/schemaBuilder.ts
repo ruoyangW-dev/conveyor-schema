@@ -197,7 +197,6 @@ export class SchemaBuilder {
     customProps
   }: {
     modelName: string
-    fieldName: string
     node?: NodeType
     data?: DataType
     customProps?: any
