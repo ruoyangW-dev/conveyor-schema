@@ -143,6 +143,10 @@ export interface Field {
    * index */
   queryIndex?: boolean
 
+  /** Whether to prevent the field from being queried so that no backend
+   *  resolver is created */
+  virtualField?: boolean
+
   /** Whether the given field should be displayed on the create page */
   showCreate?: boolean | (() => boolean)
 

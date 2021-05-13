@@ -1,3 +1,9 @@
+## Version 0.3.1
+
+Released 5-13-21
+
+Added virtualField property to Field interface
+
 ## Version 0.3.0
 
 Released 5-11-21
