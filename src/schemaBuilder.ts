@@ -15,6 +15,7 @@ import type {
   Schema,
   SchemaJSON
 } from './schemaJson'
+import { FormStack } from './formstack'
 
 /* Notes:
 
@@ -87,7 +88,7 @@ export type SchemaBuilderType = SchemaBuilder //why???
 
 export interface NodeType {
   __typename: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export type DataType = [NodeType]
@@ -137,7 +138,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     node?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getDisplayValue({
       schema: this,
@@ -156,7 +157,7 @@ export class SchemaBuilder {
     modelName: string
     fieldName: string
     node?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getNoDataDisplayValue({
       schema: this,
@@ -178,7 +179,7 @@ export class SchemaBuilder {
     fieldName: string
     node?: NodeType
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getFieldLabel({
       schema: this,
@@ -199,7 +200,7 @@ export class SchemaBuilder {
     modelName: string
     node?: NodeType
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getModelLabel({
       schema: this,
@@ -217,7 +218,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getModelLabelPlural({
       schema: this,
@@ -234,7 +235,10 @@ export class SchemaBuilder {
     return this.schemaJSON[modelName] ?? {}
   }
   // this function should not exist!!
-  getModelAttribute(modelName: string, attributeName: string): any {
+  getModelAttribute(
+    modelName: string,
+    attributeName: string
+  ): Schema[keyof Schema] {
     return this.getModel(modelName)?.[attributeName]
   }
   getActions(modelName: string): Schema['actions'] {
@@ -273,7 +277,7 @@ export class SchemaBuilder {
     data: DataType
     parentNode?: NodeType
     fieldOrder?: string[]
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isTableEditable({
       schema: this,
@@ -295,7 +299,7 @@ export class SchemaBuilder {
     node: NodeType
     parentNode?: NodeType
     fieldOrder?: string[]
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isRowEditable({
       schema: this,
@@ -317,7 +321,7 @@ export class SchemaBuilder {
     fieldName: string
     node?: NodeType
     parentNode?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isFieldEditable({
       schema: this,
@@ -337,7 +341,7 @@ export class SchemaBuilder {
     modelName: string
     data: DataType
     parentNode?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isTableDeletable({
       schema: this,
@@ -356,7 +360,7 @@ export class SchemaBuilder {
     modelName: string
     node?: NodeType
     parentNode?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isDeletable({
       schema: this,
@@ -375,7 +379,7 @@ export class SchemaBuilder {
     modelName: string
     parentNode?: NodeType
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isCreatable({
       schema: this,
@@ -413,7 +417,7 @@ export class SchemaBuilder {
     modelName: string
     fieldName: string
     node?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._shouldDisplayIndex({
       schema: this,
@@ -432,7 +436,7 @@ export class SchemaBuilder {
     modelName: string
     fieldName: string
     node?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._shouldDisplayDetail({
       schema: this,
@@ -451,7 +455,7 @@ export class SchemaBuilder {
     modelName: string
     fieldName: string
     node?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._shouldDisplayCreate({
       schema: this,
@@ -469,8 +473,8 @@ export class SchemaBuilder {
   }: {
     modelName: string
     fieldName: string
-    formStack?: any
-    customProps?: any
+    formStack: FormStack
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isFieldDisabled({
       schema: this,
@@ -487,7 +491,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     fieldName: string
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isSortable({
       schema: this,
@@ -501,7 +505,7 @@ export class SchemaBuilder {
     customProps
   }: {
     modelName: string
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isTableSortable({
       schema: this,
@@ -518,7 +522,7 @@ export class SchemaBuilder {
     modelName: string
     fieldName: string
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isFilterable({
       schema: this,
@@ -535,7 +539,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isTableFilterable({
       schema: this,
@@ -555,7 +559,7 @@ export class SchemaBuilder {
     type: string
     node?: NodeType
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string[] {
     return callbackGetters._getShownFields({
       schema: this,
@@ -573,7 +577,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     node?: NodeType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string[] {
     return callbackGetters._getDetailFields({
       schema: this,
@@ -589,7 +593,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     data?: DataType
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string[] {
     return callbackGetters._getIndexFields({
       schema: this,
@@ -603,7 +607,7 @@ export class SchemaBuilder {
     customProps
   }: {
     modelName: string
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string[] {
     return callbackGetters._getCreateFields({
       schema: this,
@@ -616,7 +620,7 @@ export class SchemaBuilder {
     customProps
   }: {
     modelName: string
-    customProps?: any
+    customProps?: Record<string, unknown>
   }): string[] {
     return callbackGetters._getTooltipFields({
       schema: this,
@@ -633,10 +637,10 @@ export class SchemaBuilder {
   }: {
     modelName: string
     fieldName: string
-    options: []
-    value?: any
-    customProps?: any
-  }): boolean | any[] {
+    options: Array<{ label: string; value: unknown }>
+    value?: { disabled: boolean; label: string; value: unknown }
+    customProps?: Record<string, unknown>
+  }): boolean | Array<{ label: string; value: unknown }> {
     return callbackGetters._getOptionsOverride({
       schema: this,
       modelName,
@@ -760,19 +764,19 @@ export class SchemaBuilder {
   getCellOverride(
     modelName: string,
     fieldName: string
-  ): (() => any) | undefined {
+  ): (() => JSX.Element) | undefined {
     return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'cell')
   }
   getDetailFieldOverride(
     modelName: string,
     fieldName: string
-  ): (() => any) | undefined {
+  ): (() => JSX.Element) | undefined {
     return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'detail')
   }
   getDetailLabelOverride(
     modelName: string,
     fieldName: string
-  ): (() => any) | undefined {
+  ): (() => JSX.Element) | undefined {
     return _getFieldOverride(
       this.schemaJSON,
       modelName,
@@ -783,7 +787,7 @@ export class SchemaBuilder {
   getDetailValueOverride(
     modelName: string,
     fieldName: string
-  ): (() => any) | undefined {
+  ): (() => JSX.Element) | undefined {
     return _getFieldOverride(
       this.schemaJSON,
       modelName,
@@ -794,37 +798,37 @@ export class SchemaBuilder {
   getInputOverride(
     modelName: string,
     fieldName: string
-  ): (() => any) | undefined {
+  ): (() => JSX.Element) | undefined {
     return _getFieldOverride(this.schemaJSON, modelName, fieldName, 'input')
   }
 
   // component overrides on model level
 
-  getCreateOverride(modelName: string): (() => any) | undefined {
+  getCreateOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'create')
   }
-  getCreateTitleOverride(modelName: string): (() => any) | undefined {
+  getCreateTitleOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'createTitle')
   }
-  getCreatePageOverride(modelName: string): (() => any) | undefined {
+  getCreatePageOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'createPage')
   }
-  getDetailOverride(modelName: string): (() => any) | undefined {
+  getDetailOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'detail')
   }
-  getDetailTitleOverride(modelName: string): (() => any) | undefined {
+  getDetailTitleOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'detailTitle')
   }
-  getDetailPageOverride(modelName: string): (() => any) | undefined {
+  getDetailPageOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'detailPage')
   }
-  getIndexOverride(modelName: string): (() => any) | undefined {
+  getIndexOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'index')
   }
-  getIndexTitleOverride(modelName: string): (() => any) | undefined {
+  getIndexTitleOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'indexTitle')
   }
-  getIndexPageOverride(modelName: string): (() => any) | undefined {
+  getIndexPageOverride(modelName: string): (() => JSX.Element) | undefined {
     return _getModelOverride(this.schemaJSON, modelName, 'indexPage')
   }
 }

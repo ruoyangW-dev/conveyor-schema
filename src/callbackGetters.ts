@@ -262,16 +262,19 @@ export const _isFieldDisabled = ({
   customProps
 }: CallbackProps & { formStack: FormStack }): boolean => {
   const { index: stackIndex, stack } = formStack
-  const { form } = stack[stackIndex]
+  const form = stack[stackIndex]
 
-  const type = schema.getType(modelName, fieldName) as string // this can't be right?
+  const type = schema.getType(modelName, fieldName)
 
   // check the form to see if 'disabled' flag set true
   let defaultDisable = false
-  if (type.includes('ToMany')) {
-    defaultDisable = R.path(['fields', fieldName, 0, 'disabled'], form) || false
-  } else if (type.includes('ToOne')) {
-    defaultDisable = R.path(['fields', fieldName, 'disabled'], form) || false
+  if (type) {
+    if (type.includes('ToMany')) {
+      defaultDisable =
+        R.path(['fields', fieldName, 0, 'disabled'], form) || false
+    } else if (type.includes('ToOne')) {
+      defaultDisable = R.path(['fields', fieldName, 'disabled'], form) || false
+    }
   }
 
   // boolean, function, or null
@@ -449,8 +452,8 @@ export const _getShownFields = ({
   //const fieldOrder = R.prop('fieldOrder', schema.getModel(modelName))
   const fieldOrder = schema.getModel(modelName).fieldOrder || []
 
-  return R.filter((fieldName): any => {
-    let show: any
+  return R.filter((fieldName) => {
+    let show
     switch (type) {
       case 'showCreate':
       case 'showDetail':
@@ -587,7 +590,10 @@ export const _getOptionsOverride = ({
   options,
   value,
   customProps
-}: CallbackProps & { options: any[]; value?: any }): boolean | any[] => {
+}: CallbackProps & {
+  options: Array<{ label: string; value: unknown }>
+  value?: { disabled: boolean; label: string; value: unknown }
+}): boolean | Array<{ label: string; value: unknown }> => {
   const disabledDropDownCond = schema.getDropDownDisableCondition(
     modelName,
     fieldName

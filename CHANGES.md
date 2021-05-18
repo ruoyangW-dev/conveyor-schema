@@ -1,3 +1,9 @@
+## Version 0.3.2
+
+-- UNRELEASED --
+
+Add typedoc
+
 ## Version 0.3.1
 
 Released 5-13-21

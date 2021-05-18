@@ -6,7 +6,10 @@ import { SchemaBuilderType } from './schemaBuilder'
 
 // override is false/undef (default) if current values LEFT ALONE => mergeLEFT
 // override is true if new function should override current data => mergeRIGHT
-const getCombine = <T extends any, U extends any>(
+const getCombine = <
+  T extends SchemaJSON | Field | Schema,
+  U extends SchemaJSON | Field | Partial<Schema>
+>(
   override = false
 ): ((x: T, y: U) => T) => (override ? R.mergeDeepRight : R.mergeDeepLeft)
 

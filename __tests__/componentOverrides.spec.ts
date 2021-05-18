@@ -4,12 +4,18 @@ import { mockSchema } from './mocks'
 describe('componentOverrides', () => {
   describe('_getFieldOverride', () => {
     it('should return component value when exists.', () => {
-      expect(_getFieldOverride(mockSchema, 'foo', 'bar', 'cell')!()).toEqual(2) // eslint-disable-line
+      expect(
+        // eslint-disable-next-line
+        _getFieldOverride(mockSchema, 'foo', 'bar', 'cell')!().props
+      ).toEqual({ children: '2' })
     })
   })
   describe('_getModelOverride', () => {
     it('should return model override value when exist.', () => {
-      expect(_getModelOverride(mockSchema, 'foo', 'detail')!()).toEqual(5) // eslint-disable-line
+      // eslint-disable-next-line
+      expect(_getModelOverride(mockSchema, 'foo', 'detail')!().props).toEqual({
+        children: '5'
+      })
     })
   })
 })

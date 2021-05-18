@@ -10,6 +10,8 @@
   "scripts": {
     "build": "rm -rf lib && tsc",
     "lint": "npx eslint .",
+    "docs": "npx typedoc --out docs src/index.ts",
+    "docs:watch": "npx typedoc --watch --out docs src/index.ts",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch"
@@ -17,7 +19,8 @@
   "dependencies": {
     "core-js": "^3.12.1",
     "pluralize": "^8.0.0",
-    "ramda": "^0.27.1"
+    "ramda": "^0.27.1",
+    "typedoc": "^0.20.36"
   },
   "devDependencies": {
     "@types/jest": "^26.0.23",
