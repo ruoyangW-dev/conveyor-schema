@@ -26,7 +26,9 @@ export const _getDisplayValue = ({
     return displayField({ schema, modelName, node, customProps })
   }
 
-  return node?.[displayField]
+  const displayValue = node?.[displayField]
+
+  return typeof displayValue === 'string' ? displayValue : ''
 }
 
 export const _getFieldLabel = ({
@@ -70,7 +72,7 @@ export const _getNoDataDisplayValue = ({
   modelName: string
   fieldName: string
   node?: NodeType
-  customProps?: any
+  customProps?: Record<string, unknown>
 }): string => {
   const model = schema.getModel(modelName)
   const noDataDisplayValue = model.fields[fieldName].noDataDisplayValue || 'N/A'

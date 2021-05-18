@@ -1,6 +1,8 @@
-Conveyor-Schema Docs
+# conveyor-schema
 
-# Docs
+[![npm version](https://badge.fury.io/js/%40autoinvent%2Fconveyor-schema.svg)](https://badge.fury.io/js/%40autoinvent%2Fconveyor-schema)
+![CI](https://github.com/autoinvent/conveyor-schema/workflows/CI/badge.svg)
+![license](https://img.shields.io/github/license/autoinvent/conveyor-schema)
 
 Conveyor-schema is a helper library for @autoinvent/conveyor. It is required for instantiating a SchemaBuilder object to be passed into conveyor's components.
 
@@ -14,8 +16,23 @@ It contains:
 
 3.) schema merge helpers
 
+## Docs
 
-# Basic Usage
+[View the docs here](https://autoinvent.github.io/conveyor-schema/)
+
+## Installation
+
+```bash
+yarn add @autoinvent/conveyor-schema
+```
+
+With npm:
+
+```bash
+npm install --save @autoinvent/conveyor-schema
+```
+
+## Basic Usage
 
 Inside your main project, after generating your raw schema JSON, convert the object to a 'SchemaBuilder' type:
 
@@ -24,14 +41,13 @@ import { SchemaBuilder } from '@autoinvent/conveyor-schema'
 
 const schema = new SchemaBuilder(schemaJSON)
 ```
+
 Now your schema is ready to be passed into any conveyor component
 
-
-
-# Development
+## Development
 
 To create the /lib folder including .d.ts files run:
 
 ```
-$ yarn run build
+$ yarn build
 ```

@@ -1,11 +1,12 @@
 import type { SchemaJSON } from '../src/schemaJson'
+import React from 'react'
 
 export const mockSchema: SchemaJSON = {
   foo: {
     fields: {
       bar: {
         components: {
-          cell: (): number => 2
+          cell: () => <div>2</div>
         },
         displayName: 'FOO',
         fieldName: 'bar',
@@ -92,7 +93,7 @@ export const mockSchema: SchemaJSON = {
     },
     modelName: 'foo',
     components: {
-      detail: (): number => 5
+      detail: () => <div>5</div>
     }
   }
 }

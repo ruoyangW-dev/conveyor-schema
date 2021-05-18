@@ -7,7 +7,7 @@ export interface CallbackProps {
   schema: SchemaBuilder
   modelName: string
   fieldName: string
-  customProps?: Record<string, any>
+  customProps?: Record<string, unknown>
 }
 
 /** simple type such as string, int, or date */
@@ -60,12 +60,12 @@ export interface DisplayConditions {
 }
 
 export interface FieldComponents {
-  cell?: () => any
-  detail?: () => any
-  detailLabel?: () => any
-  detailValue?: () => any
-  input?: () => any
-  labelInfo?: () => any
+  cell?: () => JSX.Element
+  detail?: () => JSX.Element
+  detailLabel?: () => JSX.Element
+  detailValue?: () => JSX.Element
+  input?: () => JSX.Element
+  labelInfo?: () => JSX.Element
 }
 
 export interface Field {
@@ -87,7 +87,10 @@ export interface Field {
 
   /** function which filters out or disables drop down options */
   disabledDropDown?: (
-    props: CallbackProps & { options?: any[]; value?: any }
+    props: CallbackProps & {
+      options?: Array<{ label: string; value: unknown }>
+      value?: { disabled: boolean; label: string; value: unknown }
+    }
   ) => boolean
 
   displayConditions?: DisplayConditions
@@ -164,7 +167,9 @@ export interface Field {
 
   type: BasicFieldType | FieldTypeObject
 
-  [key: string]: any
+  collapsable?: boolean
+
+  [key: string]: unknown
 }
 
 export type Fields = Record<
@@ -187,20 +192,20 @@ export type Fields = Record<
 >
 
 export interface SchemaComponents {
-  cell?: () => any
-  create?: () => any
-  createPage?: () => any
-  createTitle?: () => any
-  detail?: () => any
-  detailLabel?: () => any
-  detailPage?: () => any
-  detailTitle?: () => any
-  detailValue?: () => any
-  index?: () => any
-  indexPage?: () => any
-  indexTitle?: () => any
-  input?: () => any
-  labelInfo?: () => any
+  cell?: () => JSX.Element
+  create?: () => JSX.Element
+  createPage?: () => JSX.Element
+  createTitle?: () => JSX.Element
+  detail?: () => JSX.Element
+  detailLabel?: () => JSX.Element
+  detailPage?: () => JSX.Element
+  detailTitle?: () => JSX.Element
+  detailValue?: () => JSX.Element
+  index?: () => JSX.Element
+  indexPage?: () => JSX.Element
+  indexTitle?: () => JSX.Element
+  input?: () => JSX.Element
+  labelInfo?: () => JSX.Element
 }
 
 export interface Schema {
@@ -330,7 +335,7 @@ export interface Schema {
   /** Whether the given model should be displayed on the delete modal */
   showDeleteModal?: boolean | (() => boolean)
 
-  tabs?: any
+  tabs?: any[]
 
   tooltipFieldOrder?:
     | string[]
@@ -338,7 +343,9 @@ export interface Schema {
         props: Omit<CallbackProps, 'fieldName'> & { defaultOrder?: string[] }
       ) => string[])
 
-  [key: string]: any
+  searchable?: boolean
+
+  [key: string]: unknown
 }
 
 export type SchemaJSON = Record<string, Schema>

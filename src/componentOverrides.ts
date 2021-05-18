@@ -11,7 +11,7 @@ export const _getFieldOverride = (
   modelName: string,
   fieldName: string,
   fieldKey: keyof FieldComponents
-): (() => any) | undefined =>
+): (() => JSX.Element) | undefined =>
   schemaJSON?.[modelName]?.fields?.[fieldName]?.components?.[fieldKey]
 
 // get component overrides for model level
@@ -20,4 +20,5 @@ export const _getModelOverride = (
   schemaJSON: SchemaJSON,
   modelName: string,
   modelKey: keyof SchemaComponents
-): (() => any) | undefined => schemaJSON?.[modelName]?.components?.[modelKey]
+): (() => JSX.Element) | undefined =>
+  schemaJSON?.[modelName]?.components?.[modelKey]
