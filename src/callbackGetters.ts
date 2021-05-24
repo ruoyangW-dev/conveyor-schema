@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { inputTypes } from './inputTypes'
-import type { DataType, NodeType } from './schemaBuilder'
+import type { NodeType } from './schemaBuilder'
 import type { CallbackProps, DisplayCondition } from './schemaJson'
 import type { FormStack } from './formstack'
 
@@ -20,6 +20,29 @@ import type { FormStack } from './formstack'
  * parent 'node' must be labeled 'parentNode'
  */
 
+/*
+The following methods are callback getters, meaning that they can potentially be associated with a callback like so:
+
+ .. code-block:: javascript
+
+    // the following 'creatable' prop is in this part of the schema:
+    schema = { <modelName>: {
+        creatable: creatable
+    }}
+
+    // the following is example of callback function you would put into the schema under the 'creatable' prop:
+    const creatable = ({ schema, modelName, parentNode, data, customProps }) => {
+      // do your own logic to figure out if this model is 'creatable' based on the props coming in
+      return true
+    }
+
+    // if you want to see if a model is creatable, pass in props you need to figure out the logic.
+    // this will call upon the 'creatable' function above
+    const isCreatable = schema.isCreatable({ modelName: 'Book' , parentNode, data, customProps })
+
+'schema.isCreatable' will check the 'creatable' prop in the schema, evaluate if its a function or boolean, and return the correct value
+*/
+
 export const _isTableEditable = ({
   schema,
   modelName,
@@ -28,7 +51,7 @@ export const _isTableEditable = ({
   fieldOrder,
   customProps
 }: Omit<CallbackProps, 'fieldName'> & {
-  data: DataType
+  data: NodeType[]
   parentNode?: NodeType
   fieldOrder?: string[]
 }): boolean => {
@@ -114,7 +137,7 @@ export const _isTableDeletable = ({
   parentNode,
   customProps
 }: Omit<CallbackProps, 'fieldName'> & {
-  data: DataType
+  data: NodeType[]
   parentNode?: NodeType
 }): boolean => {
   return !R.isEmpty(
@@ -158,7 +181,7 @@ export const _isCreatable = ({
   customProps
 }: Omit<CallbackProps, 'fieldName'> & {
   parentNode?: NodeType
-  data?: DataType
+  data?: NodeType[]
 }): boolean => {
   const { creatable } = schema.getModel(modelName)
 
@@ -367,7 +390,7 @@ export const _isFilterable = ({
   fieldName,
   data,
   customProps
-}: CallbackProps & { data?: DataType }): boolean => {
+}: CallbackProps & { data?: NodeType[] }): boolean => {
   // first check if can filter on field level
   // const fieldFilterable = R.propOr(
   //   true,
@@ -405,7 +428,7 @@ export const _isTableFilterable = ({
   modelName,
   data,
   customProps
-}: Omit<CallbackProps, 'fieldName'> & { data?: DataType }): boolean => {
+}: Omit<CallbackProps, 'fieldName'> & { data?: NodeType[] }): boolean => {
   // first check if can filter on model level
   // const tableFilterable = R.propOr(
   //   true,
@@ -446,7 +469,7 @@ export const _getShownFields = ({
   customProps
 }: Omit<CallbackProps, 'fieldName'> & {
   type: string
-  data?: DataType
+  data?: NodeType[]
   node?: NodeType
 }): string[] => {
   //const fieldOrder = R.prop('fieldOrder', schema.getModel(modelName))
@@ -522,7 +545,7 @@ export const _getIndexFields = ({
   modelName,
   data,
   customProps
-}: Omit<CallbackProps, 'fieldName'> & { data?: DataType }): string[] => {
+}: Omit<CallbackProps, 'fieldName'> & { data?: NodeType[] }): string[] => {
   const { indexFieldOrder } = schema.getModel(modelName)
   const defaultOrder = schema.getShownFields({
     modelName,
