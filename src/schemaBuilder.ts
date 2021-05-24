@@ -91,8 +91,6 @@ export interface NodeType {
   [key: string]: unknown
 }
 
-export type DataType = [NodeType]
-
 export class SchemaBuilder {
   public schemaJSON: SchemaJSON
 
@@ -178,7 +176,7 @@ export class SchemaBuilder {
     modelName: string
     fieldName: string
     node?: NodeType
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getFieldLabel({
@@ -199,7 +197,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     node?: NodeType
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getModelLabel({
@@ -217,7 +215,7 @@ export class SchemaBuilder {
     customProps
   }: {
     modelName: string
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): string {
     return commonGetters._getModelLabelPlural({
@@ -266,6 +264,13 @@ export class SchemaBuilder {
 
   // callback getters
 
+  /**
+   * Checks `editable` for every object in the `data` prop => calls isRowEditable
+   * @param modelName the associated model name
+   * @param data list of nodes
+   * @param parentNode node of the parent object whose page the child node is on
+   * @param fieldOrder list of field names of the table
+   */
   isTableEditable({
     modelName,
     data,
@@ -274,7 +279,7 @@ export class SchemaBuilder {
     customProps
   }: {
     modelName: string
-    data: DataType
+    data: NodeType[]
     parentNode?: NodeType
     fieldOrder?: string[]
     customProps?: Record<string, unknown>
@@ -288,6 +293,13 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `editable` for every object in the `node` prop => calls isFieldEditable
+   * @param modelName the associated model name
+   * @param node database object that is to be displayed
+   * @param parentNode node of the parent object whose page the child node is on
+   * @param fieldOrder list of field names of the table
+   */
   isRowEditable({
     modelName,
     node,
@@ -310,6 +322,14 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `editable` on field level
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param node database object that is to be displayed
+   * @param parentNode node of the parent object whose page the child node is on
+   * @param fieldOrder list of field names of the table
+   */
   isFieldEditable({
     modelName,
     fieldName,
@@ -332,6 +352,12 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `deletable` for every object in the `data` prop => calls isDeletable
+   * @param modelName the associated model name
+   * @param data list of nodes
+   * @param parentNode node of the parent object whose page the child node is on
+   */
   isTableDeletable({
     modelName,
     data,
@@ -339,7 +365,7 @@ export class SchemaBuilder {
     customProps
   }: {
     modelName: string
-    data: DataType
+    data: NodeType[]
     parentNode?: NodeType
     customProps?: Record<string, unknown>
   }): boolean {
@@ -351,6 +377,12 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `deletable` on model level
+   * @param modelName the associated model name
+   * @param node database object that is to be displayed
+   * @param parentNode node of the parent object whose page the child node is on
+   */
   isDeletable({
     modelName,
     node,
@@ -370,6 +402,12 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `creatable` on model level
+   * @param modelName the associated model name
+   * @param data list of nodes
+   * @param parentNode node of the parent object whose page the child node is on
+   */
   isCreatable({
     modelName,
     parentNode,
@@ -378,7 +416,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     parentNode?: NodeType
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isCreatable({
@@ -389,6 +427,13 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Applies displayCondition function for given field
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param node database object that is to be displayed
+   * @param displayCondition function indicating if a given field should display
+   */
   shouldDisplay({
     modelName,
     fieldName,
@@ -408,6 +453,12 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Applies index displayCondition for given field
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param node database object that is to be displayed
+   */
   shouldDisplayIndex({
     modelName,
     fieldName,
@@ -427,6 +478,12 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Applies detail displayCondition for given field
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param node database object that is to be displayed
+   */
   shouldDisplayDetail({
     modelName,
     fieldName,
@@ -446,6 +503,12 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Applies create displayCondition for given field
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param node database object that is to be displayed
+   */
   shouldDisplayCreate({
     modelName,
     fieldName,
@@ -465,6 +528,12 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `disabled` on field level OR checks formStack for `disabled` flag on field
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param formStack conveyor-redux's formStack object, holding the 'create' form data
+   */
   isFieldDisabled({
     modelName,
     fieldName,
@@ -484,6 +553,11 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `sortable` on field level => does NOT check 'sortable' on model level, must call isTableSortable as well for full coverage
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   */
   isSortable({
     modelName,
     fieldName,
@@ -500,6 +574,10 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `sortable` on model level => also calls isSortable for every fieldName in model's `fieldOrder`
+   * @param modelName the associated model name
+   */
   isTableSortable({
     modelName,
     customProps
@@ -513,6 +591,13 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `filterable` on field level => does NOT check `filterable` on model level, must call isTableFilterable as well for full coverage
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param data list of nodes
+   * @param parentNode node of the parent object whose page the child node is on
+   */
   isFilterable({
     modelName,
     fieldName,
@@ -521,7 +606,7 @@ export class SchemaBuilder {
   }: {
     modelName: string
     fieldName: string
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isFilterable({
@@ -532,13 +617,19 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `filterable` on model level => also calls isFilterable for every fieldName listed in model's `fieldOrder`
+   * @param modelName the associated model name
+   * @param data list of nodes
+   * @param parentNode node of the parent object whose page the child node is on
+   */
   isTableFilterable({
     modelName,
     data,
     customProps
   }: {
     modelName: string
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): boolean {
     return callbackGetters._isTableFilterable({
@@ -548,6 +639,9 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Called by getDetailFields, getIndexFields, and getCreateFields internally
+   */
   getShownFields({
     modelName,
     type,
@@ -558,7 +652,7 @@ export class SchemaBuilder {
     modelName: string
     type: string
     node?: NodeType
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): string[] {
     return callbackGetters._getShownFields({
@@ -570,6 +664,11 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `detailFieldOrder` on model level OR fetches all fields with `showDetail` boolean true OR `showDetail` function evaluate to true
+   * @param modelName the associated model name
+   * @param node database object that is to be displayed
+   */
   getDetailFields({
     modelName,
     node,
@@ -586,13 +685,18 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `indexFieldOrder` on model level OR fetches all fields with `showIndex` boolean true OR `showIndex` function evaluate to true
+   * @param modelName the associated model name
+   * @param data list of nodes
+   */
   getIndexFields({
     modelName,
     data,
     customProps
   }: {
     modelName: string
-    data?: DataType
+    data?: NodeType[]
     customProps?: Record<string, unknown>
   }): string[] {
     return callbackGetters._getIndexFields({
@@ -602,6 +706,10 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `createFieldOrder` on model level OR fetches all fields with `showCreate` boolean true OR `showCreate` function evaluate to true
+   * @param modelName the associated model name
+   */
   getCreateFields({
     modelName,
     customProps
@@ -615,6 +723,10 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Checks `tooltipFieldOrder` on model level OR fetches all fields with `showTooltip` boolean true OR `showTooltip` function evaluate to true
+   * @param modelName the associated model name
+   */
   getTooltipFields({
     modelName,
     customProps
@@ -628,6 +740,16 @@ export class SchemaBuilder {
       customProps
     })
   }
+  /**
+   * Applies `disabledDropDown` on field level
+   *
+   *
+   *
+   * @param modelName the associated model name
+   * @param fieldName the associated field name
+   * @param options list of values with format {label: 'foo', value: 'bar'}
+   * @param value current value selected in the dropdown
+   */
   getOptionsOverride({
     modelName,
     fieldName,

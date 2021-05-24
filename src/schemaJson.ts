@@ -1,5 +1,5 @@
 import { SchemaBuilder } from './schemaBuilder'
-import { DataType, NodeType } from './schemaBuilder'
+import { NodeType } from './schemaBuilder'
 
 export type BasicObject = Record<string, boolean | number | string>
 
@@ -85,7 +85,31 @@ export interface Field {
     | boolean
     | ((props?: CallbackProps & { defaultDisable?: boolean }) => boolean)
 
-  /** function which filters out or disables drop down options */
+  /**
+   * Function which conditionally disables options in the select dropdown. Works for relationships (single & multi) & enums.
+   *
+   * ```javascript
+   * const foo = ({ schema, modelName, fieldName, options, value }) => {
+   *   // add 'disabled' = True to option obj (so it shows up but can't be chosen)
+   *   options = R.map(obj => R.assoc('disabled', true, obj), options)
+   *
+   *   // or filter out options (these don't show up)
+   *   options = R.filter(obj => obj.value === 'some_value', options)
+   *
+   *   return options
+   * }
+   * // add to schema
+   * schema = {
+   *   <modelName>: {
+   *     fields: {
+   *       <fieldName>: {
+   *         disabledDropDown: foo
+   *       }
+   *     }
+   *   }
+   * }
+   * ```
+   */
   disabledDropDown?: (
     props: CallbackProps & {
       options?: Array<{ label: string; value: unknown }>
@@ -100,7 +124,7 @@ export interface Field {
     | string
     | ((
         props: CallbackProps & {
-          data?: DataType
+          data?: NodeType[]
           node?: NodeType
           defaultValue: string
         }
@@ -122,7 +146,7 @@ export interface Field {
   /** Whether the given field should be filterable on tables */
   filterable?:
     | boolean
-    | ((props: CallbackProps & { data?: DataType }) => boolean)
+    | ((props: CallbackProps & { data?: NodeType[] }) => boolean)
 
   /** if table component can be hidden, have 'hide' button */
   hideable?: boolean
@@ -225,7 +249,7 @@ export interface Schema {
     | ((
         props: Omit<CallbackProps, 'fieldName'> & {
           parentNode?: NodeType
-          data?: DataType
+          data?: NodeType[]
         }
       ) => boolean)
 
@@ -269,7 +293,7 @@ export interface Schema {
     | ((
         props: Omit<CallbackProps, 'fieldName'> & {
           node?: NodeType
-          data?: DataType
+          data?: NodeType[]
           defaultValue: string
         }
       ) => string)
@@ -279,7 +303,7 @@ export interface Schema {
     | string
     | ((
         props: Omit<CallbackProps, 'fieldName'> & {
-          data?: DataType
+          data?: NodeType[]
           defaultValue: string
         }
       ) => string)
@@ -293,7 +317,7 @@ export interface Schema {
   filterable?:
     | boolean
     | ((
-        props: Omit<CallbackProps, 'fieldName'> & { data?: DataType }
+        props: Omit<CallbackProps, 'fieldName'> & { data?: NodeType[] }
       ) => boolean)
 
   hasDetail?: boolean
@@ -306,7 +330,7 @@ export interface Schema {
     | string[]
     | ((
         props: Omit<CallbackProps, 'fieldName'> & {
-          data?: DataType
+          data?: NodeType[]
           defaultOrder?: string[]
         }
       ) => string[])

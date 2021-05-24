@@ -32,7 +32,9 @@ With npm:
 npm install --save @autoinvent/conveyor-schema
 ```
 
-## Basic Usage
+## Usage
+
+### Getting Started
 
 Inside your main project, after generating your raw schema JSON, convert the object to a 'SchemaBuilder' type:
 
@@ -43,6 +45,26 @@ const schema = new SchemaBuilder(schemaJSON)
 ```
 
 Now your schema is ready to be passed into any conveyor component
+
+### Traversing the Schema
+
+The `SchemaBuilder` object has methods for easily getting props. You will never have to remember the path to take in order to access attributes.
+
+Furthermore, for schema props which can be a boolean or a function, conveyor-schema evaluates both scenarios and returns the correct value. This is useful for attributes such as 'creatable', 'deletable', and 'editable', which may be associated with a callback.
+
+For example, if you wish to find out if a 'Book' model has an index page you may:
+
+```typescript
+const hasIndex = schema.getHasIndex('Book')
+```
+
+Alternatively, the 'hard' way of doing this:
+
+```typescript
+const hasIndex = schema.schemaJSON['Book'].hasIndex
+```
+
+To see a full list of built-in methods, see the SchemaBuilder API docs.
 
 ## Development
 

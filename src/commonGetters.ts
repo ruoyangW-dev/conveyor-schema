@@ -3,7 +3,7 @@ import {
   humanizeModel,
   humanizeModelPlural
 } from './stringHelper'
-import { SchemaBuilderType, NodeType, DataType } from './schemaBuilder'
+import { SchemaBuilderType, NodeType } from './schemaBuilder'
 import { BasicFieldType, CallbackProps, RelFieldType } from './schemaJson'
 
 // common name/title getters
@@ -38,7 +38,7 @@ export const _getFieldLabel = ({
   node,
   data,
   customProps
-}: CallbackProps & { node?: NodeType; data?: DataType }): string => {
+}: CallbackProps & { node?: NodeType; data?: NodeType[] }): string => {
   const defaultValue = humanizeField(fieldName)
   // const displayName = R.pathOr(
   //   defaultValue,
@@ -97,7 +97,7 @@ export const _getModelLabel = ({
   customProps
 }: Omit<CallbackProps, 'fieldName'> & {
   node?: NodeType
-  data?: DataType
+  data?: NodeType[]
 }): string => {
   const defaultValue = humanizeModel(modelName)
   const displayName = schema.schemaJSON[modelName].displayName ?? defaultValue
@@ -120,7 +120,7 @@ export const _getModelLabelPlural = ({
   modelName,
   data,
   customProps
-}: Omit<CallbackProps, 'fieldName'> & { data?: DataType }): string => {
+}: Omit<CallbackProps, 'fieldName'> & { data?: NodeType[] }): string => {
   const defaultValue = humanizeModelPlural(modelName)
   // const displayName = R.pathOr(
   //   defaultValue,
