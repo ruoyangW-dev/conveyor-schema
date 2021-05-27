@@ -1,3 +1,9 @@
+## Version 0.3.3
+
+-- UNRELEASED --
+
+Add Color to inputTypes
+
 ## Version 0.3.2
 
 -- UNRELEASED --
