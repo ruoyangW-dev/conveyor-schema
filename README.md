@@ -1,7 +1,7 @@
 # conveyor-schema
 
 [![npm version](https://badge.fury.io/js/%40autoinvent%2Fconveyor-schema.svg)](https://badge.fury.io/js/%40autoinvent%2Fconveyor-schema)
-![CI](https://github.com/autoinvent/conveyor-schema/workflows/CI/badge.svg)
+![CI](https://github.com/autoinvent/conveyor-schema/workflows/CI/badge.svg?branch=main)
 ![license](https://img.shields.io/github/license/autoinvent/conveyor-schema)
 
 Conveyor-schema is a helper library for @autoinvent/conveyor. It is required for instantiating a SchemaBuilder object to be passed into conveyor's components.
