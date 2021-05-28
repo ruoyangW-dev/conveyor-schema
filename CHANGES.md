@@ -3,6 +3,7 @@
 -- UNRELEASED --
 
 Add typedoc
+Addded Color to inputTypes
 
 ## Version 0.3.1
 
