@@ -1,9 +1,9 @@
-## Version 0.3.2
+## Version 0.4.0
 
--- UNRELEASED --
+Released 6-8-21
 
-Add typedoc
-Addded Color to inputTypes
+Added typedoc \
+Added Color to inputTypes
 
 ## Version 0.3.1
 
@@ -15,7 +15,7 @@ Added virtualField property to Field interface
 
 Released 5-11-21
 
-Typescript improvements
+Typescript improvements \
 Added getter for relationship table fields
 
 ## Version 0.2.1
