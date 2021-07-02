@@ -42,12 +42,26 @@ export const _getRequiredFields = (
 export const _getHasIndex = (
   schema: SchemaBuilderType,
   modelName: string
-): boolean => schema.getModel(modelName).hasIndex || true
+): boolean => {
+  const field = schema.getModel(modelName).hasIndex
+  if (typeof field !== 'undefined') {
+    return field || false
+  } else {
+    return true
+  }
+}
 
 export const _getHasDetail = (
   schema: SchemaBuilderType,
   modelName: string
-): boolean => schema.getModel(modelName).hasDetail || true
+): boolean => {
+  const field = schema.getModel(modelName).hasDetail
+  if (typeof field !== 'undefined') {
+    return field || false
+  } else {
+    return true
+  }
+}
 
 export const _getSingleton = (
   schema: SchemaBuilderType,
