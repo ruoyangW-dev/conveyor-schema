@@ -1,3 +1,9 @@
+## Version 0.4.1
+
+Released 7-6-21
+
+Fix getter functions for hasIndex and hasDetail always returning true
+
 ## Version 0.4.0
 
 Released 6-8-21
