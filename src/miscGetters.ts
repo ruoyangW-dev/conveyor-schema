@@ -12,7 +12,7 @@ export const _getFieldDisableCondition = (
   schema: SchemaBuilderType,
   modelName: string,
   fieldName: string
-): Field['disabled'] => schema.getField(modelName, fieldName)?.disabled ?? false
+): Field['disabled'] => schema.getField(modelName, fieldName)?.disabled
 
 export const _getDropDownDisableCondition = (
   schema: SchemaBuilderType,
