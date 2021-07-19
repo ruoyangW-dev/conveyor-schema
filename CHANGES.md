@@ -1,3 +1,6 @@
+## Unreleased
+Moved conveyor-schema jest tests here
+
 ## Version 0.4.2
 
 Released 7-6-21
